@@ -1,17 +1,19 @@
 # QMux
 
-This is the working area for the individual Internet-Draft, "QMux".
+This is the working area for the IETF QUIC Working Group Internet-Draft, "QMux".
 
-* [Editor's Copy](https://kazuho.github.io/draft-opik-quic-qmux/#go.draft-opik-quic-qmux.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-opik-quic-qmux)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-opik-quic-qmux)
-* [Compare Editor's Copy to Individual Draft](https://kazuho.github.io/draft-opik-quic-qmux/#go.draft-opik-quic-qmux.diff)
+https://quicwg.github.io/multipath/#go.draft-ietf-quic-multipath.html
+
+* [Editor's Copy](https://quicwg.github.io/qmux/#go.draft-ietf-quic-qmux.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-quic-qmux)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-quic-qmux)
+* [Compare Editor's Copy to Individual Draft](https://quicwg.github.io/qmux/#go.draft-ietf-quic-qmux.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/kazuho/draft-opik-quic-qmux/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/quicwg/qmux/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
