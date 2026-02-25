@@ -2,8 +2,6 @@
 
 This is the working area for the IETF QUIC Working Group Internet-Draft, "QMux".
 
-https://quicwg.github.io/multipath/#go.draft-ietf-quic-multipath.html
-
 * [Editor's Copy](https://quicwg.github.io/qmux/#go.draft-ietf-quic-qmux.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-quic-qmux)
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-quic-qmux)
