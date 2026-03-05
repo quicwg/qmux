@@ -155,10 +155,17 @@ version 1, with the exception to the specific changes made to the STREAM frames,
 as detailed in {{stream-frames}}.
 
 Use of other frames defined in QUIC version 1 is prohibited for various reasons.
-ACK frames are not used because the underlying transport guarantees delivery.
 Frames related to the cryptographic handshake are not used because an underlying
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.
+
+QMux does not use ACK frames; in terms of the QUIC protocol machinery, frames
+are considered acknowledged once they are passed to the underlying transport
+for sending. For the stream state machinery defined in {{Section 3 of QUIC}},
+references to acknowledgment are interpreted accordingly. This means that
+applications cannot assume that the peer application has consumed data based
+solely on transport events. ACKs in QUIC version 1 do not provide that
+guarantee either ({{Section 13.1 of QUIC}}).
 
 The full list of prohibited frames is:
 
