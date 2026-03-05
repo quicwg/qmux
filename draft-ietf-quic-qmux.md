@@ -68,7 +68,9 @@ HTTP variants ({{?webtrans-h3=I-D.ietf-webtrans-http3}},
 To reduce or eliminate the costs associated with duplicated efforts in providing
 services on top of both transport protocols, this document specifies a polyfill
 that allows application protocols built on QUIC to run on transport protocols
-that provide single bi-directional, byte-oriented stream such as TCP or TLS.
+that provide a single bi-directional, byte-oriented stream, such as TCP
+{{?TCP=RFC9293}} or Multipath TCP {{?MPTCP=RFC8684}}, combined with TLS
+providing security.
 
 The specified polyfill provides a compatibility layer for the set of operations
 (i.e., API) required by QUIC, as specified in {{Section 2.4 and Section 5.3 of
