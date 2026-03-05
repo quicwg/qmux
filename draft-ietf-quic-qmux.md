@@ -1,6 +1,6 @@
 ---
 title: "QMux"
-docname: draft-opik-quic-qmux-latest
+docname: draft-ietf-quic-qmux-latest
 category: std
 wg: QUIC
 ipr: trust200902

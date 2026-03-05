@@ -7,9 +7,10 @@
 *~
 .tags
 /*-[0-9][0-9].xml
+/.*.mk
 /.gems/
+/.idea/
 /.refcache
-/.targets.mk
 /.venv/
 /.vscode/
 /lib
@@ -17,7 +18,7 @@
 /versioned/
 Gemfile.lock
 archive.json
-draft-opik-quic-qmux.xml
+draft-ietf-quic-qmux.xml
 package-lock.json
 report.xml
 !requirements.txt
