@@ -295,23 +295,6 @@ respond, an endpoint MAY only respond with one QX_PING frame of type 0xTBD+1
 carrying the largest Sequence Number that the endpoint has received.
 
 
-# Implicit Acknowledgments {#no-ack}
-
-Unlike QUIC, QMux does not use ACK frames, because the underlying substrate
-guarantees delivery.
-
-Frames are therefore treated as implicitly acknowledged once they have been
-passed to the substrate for sending. For the stream state machinery defined in
-{{Section 3 of QUIC}}, this means that STREAM frames and other frames that
-affect stream state are considered acknowledged at that point.
-
-Because QMux does not have ACK frames, applications can never use
-acknowledgments to assume that the peer application has received data. ACKs in
-QUIC version 1 do not provide such a guarantee either, although the protocol
-allows implementations to send ACKs only after data has been delivered to the
-application ({{Section 13.1 of QUIC}}).
-
-
 # Transport Parameters
 
 QMux uses a subset of Transport Parameters defined in QUIC version 1. Also, one
