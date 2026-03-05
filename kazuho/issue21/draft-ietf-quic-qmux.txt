@@ -306,11 +306,11 @@ Table of Contents
    each QUIC stream being sent, senders MUST send stream payload in
    order.
 
-   This change from QUIC version 1 eliminates the need for
-   implementations to buffer and reassemble the stream payload.  As a
-   result, the payload being received can be directly passed to the
-   application as it is read from the transport.  This efficiency is due
-   to the underlying transport's guarantee of in-order delivery.
+   This change eliminates the need for implementations to buffer and
+   reassemble the stream payload.  As a result, the payload being
+   received can be directly passed to the application as it is read from
+   the transport.  This efficiency is due to the underlying transport's
+   guarantee of in-order delivery.
 
    When receiving a STREAM frame that carries a payload not immediately
    following the payload of the previous STREAM frame for the same
