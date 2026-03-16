@@ -223,7 +223,7 @@ In QUIC version 1, the order in which STREAM frames are sent or received is not
 guaranteed, because packets can be lost and frames can be retransmitted in
 different packets. In contrast, QMux, which runs over an ordered and reliable
 byte stream transport, requires STREAM frames for each QUIC stream to be sent
-in order: i.e., for each QUIC stream being sent, senders MUST send stream
+in order: i.e., for each QUIC stream being sent, senders MUST send the stream
 payload in order.
 
 This change eliminates the need for implementations to buffer and reassemble
