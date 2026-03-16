@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 6 September 2026                                     Cloudflare
+Expires: 17 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            5 March 2026
+                                                           16 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 September 2026.
+   This Internet-Draft will expire on 17 September 2026.
 
 Copyright Notice
 
@@ -208,7 +208,8 @@ Table of Contents
    QMux Records contain the following fields:
 
    Size:  A variable-length integer specifying the length in bytes of
-      the Frames field.
+      the Frames field.  Note that this length does not include the Size
+      field itself.
 
    Frames:  A byte sequence that contains one or more QUIC frames.
 
