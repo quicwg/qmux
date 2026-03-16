@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 29 August 2026                                       Cloudflare
+Expires: 17 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                        25 February 2026
+                                                           16 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2026.
+   This Internet-Draft will expire on 17 September 2026.
 
 Copyright Notice
 
@@ -637,16 +637,16 @@ Table of Contents
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
               Vasiliev, V., and G. Xie, "WebTransport over HTTP/2", Work
-              in Progress, Internet-Draft, draft-ietf-webtrans-http2-13,
-              20 October 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-webtrans-http2-13>.
+              in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
+              2 March 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-webtrans-http2-14>.
 
    [webtrans-h3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-14, 20 October 2025,
+              ietf-webtrans-http3-15, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-14>.
+              webtrans-http3-15>.
 
 Acknowledgments
 
