@@ -148,7 +148,7 @@ QMux Records contain the following fields:
 
 Size:
 
-: A variable-length integer specifying the length in bytes of the Frames field.
+: A variable-length integer specifying the length in bytes of the Frames field. Note that this length does not include the Size field itself.
 
 Frames:
 
