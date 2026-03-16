@@ -1506,7 +1506,7 @@ close the connection with an error of type FRAME_ENCODING_ERROR.<a href="#sectio
 guaranteed, because packets can be lost and frames can be retransmitted in
 different packets. In contrast, QMux, which runs over an ordered and reliable
 byte stream transport, requires STREAM frames for each QUIC stream to be sent
-in order: i.e., for each QUIC stream being sent, senders <span class="bcp14">MUST</span> send stream
+in order: i.e., for each QUIC stream being sent, senders <span class="bcp14">MUST</span> send the stream
 payload in order.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2">This change eliminates the need for implementations to buffer and reassemble
 the stream payload. As a result, the payload being received can be directly

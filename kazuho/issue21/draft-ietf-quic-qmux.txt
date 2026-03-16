@@ -304,7 +304,7 @@ Table of Contents
    can be retransmitted in different packets.  In contrast, QMux, which
    runs over an ordered and reliable byte stream transport, requires
    STREAM frames for each QUIC stream to be sent in order: i.e., for
-   each QUIC stream being sent, senders MUST send stream payload in
+   each QUIC stream being sent, senders MUST send the stream payload in
    order.
 
    This change eliminates the need for implementations to buffer and
