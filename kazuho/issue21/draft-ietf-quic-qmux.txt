@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 17 September 2026                                    Cloudflare
+Expires: 18 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           16 March 2026
+                                                           17 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 September 2026.
+   This Internet-Draft will expire on 18 September 2026.
 
 Copyright Notice
 
@@ -153,10 +153,10 @@ Table of Contents
    byte-oriented stream that is ordered and reliable; for details, see
    Section 3.1.
 
-   QMux uses a two-layer encoding; see Section 3.2.
-
-   The frames are not encrypted.  It is the task of the transport (e.g.,
-   TLS) to provide confidentially and integrity.
+   QMux transfers one or more QUIC frames within a QMux record; see
+   Section 3.2.  Neither QUIC frames nor QMux records are encrypted in
+   this protocol; it is the task of the transport (e.g., TLS) to provide
+   confidentiality and integrity.
 
    QUIC packet headers are not used.
 
@@ -657,7 +657,7 @@ Table of Contents
 
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
-              Vasiliev, V., and G. Xie, "WebTransport over HTTP/2", Work
+              Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
               2 March 2026, <https://datatracker.ietf.org/doc/html/
               draft-ietf-webtrans-http2-14>.
