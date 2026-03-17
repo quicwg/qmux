@@ -85,10 +85,9 @@ QUIC}}.
 QMux can be used on any transport that provides a bi-directional, byte-oriented
 stream that is ordered and reliable; for details, see {{transport-properties}}.
 
-QMux uses a two-layer encoding; see {{records}}.
-
-The frames are not encrypted. It is the task of the transport (e.g., TLS) to
-provide confidentially and integrity.
+QMux transfers one or more QUIC frames within a QMux record; see {{records}}.
+Neither QUIC frames nor QMux records are encrypted in this protocol; it is the
+task of the transport (e.g., TLS) to provide confidentiality and integrity.
 
 QUIC packet headers are not used.
 
