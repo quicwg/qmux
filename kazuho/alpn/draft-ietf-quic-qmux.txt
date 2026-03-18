@@ -460,9 +460,9 @@ Table of Contents
 
    TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its
    wire format might change.  Therefore, when testing interoperability
-   of application protocols using a draft version of QMux, the ALPN
-   identifiers used for testing should indicate the draft version of
-   QMux with which they are intended to be used.
+   of application protocols using a draft version of QMux, applications
+   should specify, for each ALPN identifier they define, which draft
+   version of QMux is used.
 
 7.2.  Using 0-RTT
 
