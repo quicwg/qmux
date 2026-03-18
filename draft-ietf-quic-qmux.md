@@ -380,9 +380,9 @@ QMux is not itself an application protocol and does not have an ALPN identifier.
 
 TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
 format might change. Therefore, when testing interoperability of application
-protocols using a draft version of QMux, the ALPN identifiers used for testing
-should indicate the draft version of QMux with which they are intended to be
-used.
+protocols using a draft version of QMux, applications should specify, for each
+ALPN identifier they define, which draft version of QMux is used.
+
 
 ## Using 0-RTT
 
