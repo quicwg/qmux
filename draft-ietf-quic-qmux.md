@@ -368,7 +368,7 @@ confidentiality and integrity protection.
 ## Protocol Negotiation
 
 As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
-over QMux over TLS, endpoints MUST use the TLS Application-Layer Protocol
+over QMux over TLS, endpoints MUST use TLS Application-Layer Protocol
 Negotiation (ALPN) {{!ALPN=RFC7301}} to agree on an application protocol, unless
 another mechanism is used for agreeing on an application protocol.
 
