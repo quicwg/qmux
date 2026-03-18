@@ -389,7 +389,7 @@ the use of QMux draft-05.
 
 TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
 
-When using QMux over of TLS that supports early data, clients MAY use early data
+When using QMux over TLS that supports early data, clients MAY use early data
 when resuming a connection, by reusing certain Transport Parameters as defined
 in {{Section 7.4.1 of QUIC}}.
 
