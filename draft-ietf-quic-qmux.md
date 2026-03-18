@@ -381,7 +381,8 @@ QMux is not itself an application protocol and does not have an ALPN identifier.
 TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
 format might change. Therefore, when testing interoperability of application
 protocols using a draft version of QMux, applications should specify, for each
-ALPN identifier they define, which draft version of QMux is used.
+ALPN identifier they define, which draft version of QMux is used. As an example, an ALPN identifier such as "myapp-12" could identify myapp draft-12 and imply
+the use of QMux draft-05.
 
 
 ## Using 0-RTT
