@@ -21,6 +21,10 @@ author:
     organization: Apple
     email: ekinnear@apple.com
 
+informative:
+  QUIC-TLS: RFC9001
+
+
 --- abstract
 
 This document specifies QMux version 1. QMux version 1 provides, over
@@ -355,16 +359,36 @@ resources allocated for the Service are freed and the underlying transport is
 closed immediately.
 
 
-# Using 0-RTT
+# Using TLS
 
-TLS 1.3 introduced the concept of early data (also knows as 0-RTT data).
+When QMux is used over TLS, TLS provides capabilities in addition to
+confidentiality and integrity protection.
 
-When using QMux on top of TLS that supports early data, clients MAY use early
-data when resuming a connection, by reusing certain Transport Parameters as
-defined in {{Section 7.4.1 of QUIC}}.
+
+## Protocol Negotiation
+
+As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
+over QMux over TLS, endpoints MUST use the TLS Application-Layer Protocol
+Negotiation (ALPN) {{!ALPN=RFC7301}} to agree on an application protocol, unless
+another mechanism is used for agreeing on an application protocol.
+
+ALPN protocol identifiers identify the application protocol in use. Application
+protocols that use QMux over TLS MUST designate their ALPN identifier and
+specify that they use QMux.
+
+QMux is not itself an application protocol and does not have an ALPN identifier.
+
+
+## Using 0-RTT
+
+TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
+
+When using QMux over of TLS that supports early data, clients MAY use early data
+when resuming a connection, by reusing certain Transport Parameters as defined
+in {{Section 7.4.1 of QUIC}}.
 
 Similarly, when accepting early data, the servers MUST send Transport Parameters
-that obey to the restrictions defined in {{Section 7.4.1 of QUIC}}.
+that comply with the restrictions defined in {{Section 7.4.1 of QUIC}}.
 
 
 # Extensions
@@ -424,7 +448,7 @@ version negotiation and upgrade.
 When a new QUIC version that provides a different interface to applications is
 specified, application protocols developed for that version might be assigned a
 new identifier for the TLS Application-Layer Protocol Negotiation (ALPN)
-extension {{?ALPN=RFC7301}}.
+extension {{ALPN}}.
 
 Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
