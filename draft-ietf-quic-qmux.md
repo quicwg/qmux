@@ -325,14 +325,14 @@ QX_PING frames are formatted as shown in {{fig-qx-ping}}.
 
 ~~~
 QX_PING Frame {
-  Type (i) = 0xTBD..0xTBD+1,
+  Type (i) = 0x348c67529ef8c7bd..0x348c67529ef8c7be,
   Sequence Number (i),
 }
 ~~~
 {: #fig-qx-ping title="QX_PING Frame Format"}
 
-Type 0xTBD is used for sending a ping (i.e., request the peer to respond). Type
-0xTBD+1 is used in response.
+Type 0x348c67529ef8c7bd is used for sending a ping (i.e., request the peer to
+respond). Type 0x348c67529ef8c7be is used in response.
 
 QX_PING frames contain the following fields:
 
@@ -340,16 +340,17 @@ Sequence Number:
 
 : A variable-length integer used to identify the ping.
 
-When sending QX_PING frames of type 0xTBD, endpoints MUST send monotonically
-increasing values in the Sequence Number field, since that allows the endpoints
-to identify to which ping the peer has responded.
+When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints MUST send
+monotonically increasing values in the Sequence Number field, since that allows
+the endpoints to identify to which ping the peer has responded.
 
-When sending QX_PING frames of type 0xTBD+1 in response, endpoints MUST echo the
-Sequence Number that they received.
+When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
+MUST echo the Sequence Number that they received.
 
-When receiving multiple QX_PING frames of type 0xTBD before having the chance to
-respond, an endpoint MAY only respond with one QX_PING frame of type 0xTBD+1
-carrying the largest Sequence Number that the endpoint has received.
+When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd before having
+the chance to respond, an endpoint MAY only respond with one QX_PING frame of
+type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
+has received.
 
 
 # Transport Parameters
@@ -384,9 +385,9 @@ MUST ignore them unless they are specified to be usable on QMux.
 
 ## max_record_size Transport Parameter {#max_record_size}
 
-The `max_record_size` Transport Parameter (0xTBD) is a variable-length integer
-specifying the maximum value of the Size field of a QMux Record that the peer
-can send, in the unit of bytes.
+The `max_record_size` Transport Parameter (0x0571c59429cd0845) is a
+variable-length integer specifying the maximum value of the Size field of a QMux
+Record that the peer can send, in the unit of bytes.
 
 The initial value of the `max_record_size` Transport Parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
@@ -593,7 +594,38 @@ resource-exhaustion attacks.
 
 # IANA Considerations
 
-TODO
+This document defines new frame types and a transport parameter for use
+with QUIC. IANA is requested to register the following values in the
+registries under <https://www.iana.org/assignments/quic>.
+
+The codepoints listed below, unless otherwise stated, were selected using the
+deterministic method described at <https://martinthomson.github.io/quic-pick/>,
+with seeds of the form `draft-ietf-quic-qmux-NN_<fieldtype>`. Upon publication
+as an RFC, IANA is requested to replace provisional codepoints with permanent
+assignments from the standards-action range.
+
+
+## QUIC Frame Types
+
+The following entries should be added to the "QUIC Frame Types"
+registry.
+
+| Value | Frame Type Name | Status | Specification |
+|---|---|---|---|
+| 0x3f5153300d0a0d0a | QX_TRANSPORT_PARAMETERS | provisional | {{fig-qx-transport-parameters}} |
+| 0x348c67529ef8c7bd - 0x348c67529ef8c7be | QX_PING | provisional | {{fig-qx-ping}} |
+
+The value 0x3f5153300d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen deliberately
+to function as a protocol magic number see ({{fig-qx-transport-parameters}}).
+
+## QUIC Transport Parameters
+
+The following entry should be added to the "QUIC Transport Parameters"
+registry.
+
+| Value | Parameter Name | Status | Specification |
+|---|---|---|---|
+| 0x0571c59429cd0845 | max_record_size | provisional | {{max_record_size}} |
 
 
 --- back
