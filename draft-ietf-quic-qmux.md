@@ -376,6 +376,11 @@ ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS MUST designate their ALPN identifier and
 specify that they use QMux.
 
+When using ALPN, endpoints MUST abort the TLS handshake with a
+no_application_protocol TLS alert ({{Section 3.2 of ALPN}}) if an application
+protocol is not negotiated. While ALPN only requires that servers use this
+alert, QMux clients MUST also abort the handshake when ALPN negotiation fails.
+
 QMux is not itself an application protocol and does not have an ALPN identifier.
 
 TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
