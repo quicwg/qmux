@@ -234,14 +234,17 @@ Table of Contents
    features.  Use of frames that communicate Connection IDs and those
    related to path migration is forbidden.
 
-   QMux does not use ACK frames; in terms of the QUIC protocol
-   machinery, frames are considered acknowledged once they are passed to
-   the underlying transport for sending.  For the stream state machinery
-   defined in Section 3 of [QUIC], references to acknowledgment are
-   interpreted accordingly.  This means that applications cannot assume
-   that the peer application has consumed data based solely on transport
-   events.  ACKs in QUIC version 1 do not provide that guarantee either
-   (Section 13.1 of [QUIC]).
+   QMux relies on the underlying transport for reliable delivery and
+   therefore does not use ACK frames.  In contrast to QUIC version 1
+   that tracks delivery of frames and retransmit lost information
+   (Section 13.3 of [QUIC]), frames in QMux are considered delivered as
+   soon as they are passed to the underlying transport for sending.
+   QMux stacks do not track delivery nor retransmit lost information.
+   For the stream state machinery defined in Section 3 of [QUIC],
+   references to acknowledgment are interpreted accordingly.  This means
+   that applications cannot assume that the peer application has
+   consumed data based solely on transport events.  ACKs in QUIC version
+   1 do not provide that guarantee either.
 
    The full list of prohibited frames is:
 
