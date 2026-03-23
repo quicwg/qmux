@@ -1,10 +1,12 @@
-// Codepoint picker for draft-ietf-quic-qmux
-//
-// Determines the next draft version from git tags, runs the quic-pick
-// selection algorithm, and appends new rows to codepoints.md.
-//
-// Usage:  node pick-codepoints.js
-//         make codepoints
+/**
+ * pick-codepoints.js - Codepoint picker for draft-ietf-quic-qmux
+ *
+ * Determines the next draft version from git tags, runs the quic-pick
+ * selection algorithm, and appends new rows to codepoints.md.
+ *
+ * Usage:  node pick-codepoints.js
+ *         make codepoints
+ */
 
 import https from 'https';
 import fs from 'fs';
@@ -12,13 +14,11 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { pick, permalink } from './quic-pick/quic-pick.js';
+import { cellsOf, isDataRow, readSection, writeChunks } from './codepoints-table.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ---------------------------------------------------------------------------
-// fetch shim for Node.js
-// ---------------------------------------------------------------------------
-
+// fetch implementation for Node.js, passed to quic-pick for registry loading.
 function fetchFn(url) {
   return new Promise((resolve, reject) => {
     https.get(url, res => {
@@ -35,30 +35,22 @@ function fetchFn(url) {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Version derivation
-// ---------------------------------------------------------------------------
-
+// Derive the next draft version by finding the highest draft-ietf-quic-qmux-NN
+// git tag and incrementing its number.
 function nextVersion() {
-  const tags = execSync('git tag -l', { encoding: 'utf8' })
+  const tags = execSync('git tag -l', { encoding: 'utf8', cwd: path.join(__dirname, '..') })
     .split('\n')
     .map(t => t.trim())
     .filter(t => /^draft-ietf-quic-qmux-\d+$/.test(t));
 
-  if (tags.length === 0) {
-    throw new Error('No tags matching draft-ietf-quic-qmux-NN found');
-  }
+  if (tags.length === 0) throw new Error('No tags matching draft-ietf-quic-qmux-NN found');
 
   const nums = tags.map(t => parseInt(t.match(/(\d+)$/)[1], 10));
   const next = Math.max(...nums) + 1;
   return `draft-ietf-quic-qmux-${String(next).padStart(2, '0')}`;
 }
 
-// ---------------------------------------------------------------------------
-// codepoints.md management
-// ---------------------------------------------------------------------------
-
-const CODEPOINTS_FILE = path.join(__dirname, 'codepoints.md');
+const CODEPOINTS_FILE = path.join(__dirname, '..', 'codepoints.md');
 
 const SECTIONS = [
   { field: 'frame',   header: '## QUIC Frame Types' },
@@ -69,90 +61,57 @@ const SECTIONS = [
 
 const TABLE_HEADER = '| Name | Codepoint | Draft version | Selection |\n|---|---|---|---|';
 
+// Create codepoints.md with empty tables if it does not already exist.
 function initCodepointsFile() {
   if (fs.existsSync(CODEPOINTS_FILE)) return;
-
-  const sections = SECTIONS
-    .map(s => `${s.header}\n\n${TABLE_HEADER}`)
-    .join('\n\n');
-
+  const sections = SECTIONS.map(s => `${s.header}\n\n${TABLE_HEADER}`).join('\n\n');
   fs.writeFileSync(CODEPOINTS_FILE, `# QMux Codepoints\n\n${sections}\n`);
   console.log('Created codepoints.md');
 }
 
+// Returns true if codepoints.md already has rows for the given draft version.
 function alreadyHasVersion(draftVersion) {
-  const content = fs.readFileSync(CODEPOINTS_FILE, 'utf8');
-  return content.includes(`| ${draftVersion} |`);
+  return fs.readFileSync(CODEPOINTS_FILE, 'utf8').includes(`| ${draftVersion} |`);
 }
 
-// Returns rows from a given section whose Selection column is 'Magic Value',
-// with the draft version updated to draftVersion.
+// Returns Magic Value rows from a section with the draft version updated to
+// draftVersion. Deduplicates by name so each magic value is carried forward once.
 function magicValueRows(field, draftVersion) {
-  const content = fs.readFileSync(CODEPOINTS_FILE, 'utf8');
-  const section = SECTIONS.find(s => s.field === field);
-  if (!section) return [];
-  const chunks = content.split(/(?=^## )/m);
-  const chunk = chunks.find(c => c.startsWith(section.header));
-  if (!chunk) return [];
+  const { lines, separatorLine } = readSection(CODEPOINTS_FILE, SECTIONS.find(s => s.field === field).header);
   const seen = new Set();
-  return chunk.split('\n')
-    .filter(l => l.startsWith('|') && !l.startsWith('| Name') && !l.startsWith('|---'))
-    .filter(l => l.endsWith('| Magic Value |'))
+  return lines.slice(separatorLine + 1)
+    .filter(l => isDataRow(l) && l.endsWith('| Magic Value |'))
     .filter(l => {
-      const name = l.split('|').map(c => c.trim()).filter(c => c !== '')[0];
+      const name = cellsOf(l)[0];
       if (seen.has(name)) return false;
       seen.add(name);
       return true;
     })
     .map(l => {
-      const cells = l.split('|').map(c => c.trim()).filter(c => c !== '');
+      const cells = cellsOf(l);
       cells[2] = draftVersion;
       return '| ' + cells.join(' | ') + ' |';
     });
 }
 
-// Add new rows to a section and re-sort the entire table by (name asc, version desc).
+// Add new rows to a section and re-sort the entire table by (name asc, version desc),
+// keeping all rows for the same codepoint name together with newer versions first.
 function addRows(field, newRows) {
-  let content = fs.readFileSync(CODEPOINTS_FILE, 'utf8');
-  const section = SECTIONS.find(s => s.field === field);
-  if (!section) throw new Error(`Unknown field: ${field}`);
+  const { chunks, idx, lines, separatorLine } = readSection(CODEPOINTS_FILE, SECTIONS.find(s => s.field === field).header);
 
-  const chunks = content.split(/(?=^## )/m);
-  const idx = chunks.findIndex(c => c.startsWith(section.header));
-  if (idx === -1) throw new Error(`Section "${section.header}" not found in codepoints.md`);
-
-  const lines = chunks[idx].split('\n');
-  let separatorLine = -1;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith('|---')) { separatorLine = i; break; }
-  }
-  if (separatorLine === -1) throw new Error(`No table found under "${section.header}"`);
-
-  const existingRows = lines.slice(separatorLine + 1).filter(l => l.startsWith('|'));
-  const nonTableLines = lines.slice(separatorLine + 1).filter(l => !l.startsWith('|'));
+  const existingRows = lines.slice(separatorLine + 1).filter(l => isDataRow(l));
+  const nonTableLines = lines.slice(separatorLine + 1).filter(l => !isDataRow(l));
   const allRows = [...existingRows, ...newRows];
 
-  const cellsOf = r => r.split('|').map(c => c.trim()).filter(c => c !== '');
-  const nameOf = r => cellsOf(r)[0];
-  const versionOf = r => cellsOf(r)[2];
-
   allRows.sort((a, b) => {
-    const nameCmp = nameOf(a).localeCompare(nameOf(b));
+    const nameCmp = cellsOf(a)[0].localeCompare(cellsOf(b)[0]);
     if (nameCmp !== 0) return nameCmp;
-    return versionOf(b).localeCompare(versionOf(a));
+    return cellsOf(b)[2].localeCompare(cellsOf(a)[2]);
   });
 
-  chunks[idx] = [
-    ...lines.slice(0, separatorLine + 1),
-    ...allRows,
-    ...nonTableLines,
-  ].join('\n');
-  fs.writeFileSync(CODEPOINTS_FILE, chunks.join(''));
+  chunks[idx] = [...lines.slice(0, separatorLine + 1), ...allRows, ...nonTableLines].join('\n');
+  writeChunks(CODEPOINTS_FILE, chunks);
 }
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
 
 async function main() {
   const draftVersion = nextVersion();
@@ -167,7 +126,8 @@ async function main() {
 
   const SIZE = 8;
 
-  // Field-specific seeds avoid coincidental value collisions across registries
+  // Use field-specific seeds to avoid coincidental value collisions across
+  // registries (e.g. frame and tp could otherwise produce the same value).
   const frameSeed = `${draftVersion}_frame`;
   const tpSeed = `${draftVersion}_tp`;
 

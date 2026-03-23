@@ -3,18 +3,18 @@ include $(LIBDIR)/main.mk
 
 .PHONY: codepoints apply-codepoints update-quic-pick
 
-codepoints: quic-pick/quic-pick.js
-	node pick-codepoints.js
+codepoints: codepoints/quic-pick/quic-pick.js
+	node codepoints/pick-codepoints.js
 
 apply-codepoints:
-	node apply-codepoints.js
+	node codepoints/apply-codepoints.js
 
 update-quic-pick:
-	git submodule update --remote quic-pick
+	git submodule update --remote codepoints/quic-pick
 	@echo "quic-pick submodule updated — review and commit if changed"
 
-quic-pick/quic-pick.js:
-	git submodule update --init quic-pick
+codepoints/quic-pick/quic-pick.js:
+	git submodule update --init codepoints/quic-pick
 
 $(LIBDIR)/main.mk:
 ifneq (,$(shell grep "path *= *$(LIBDIR)" .gitmodules 2>/dev/null))
