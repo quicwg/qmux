@@ -160,10 +160,7 @@ security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.
 
 QMux relies on the underlying transport for reliable delivery and therefore does
-not use ACK frames. In contrast to QUIC version 1 that tracks delivery of frames
-and retransmit lost information ({{Section 13.3 of QUIC}}), frames in QMux are
-considered delivered as soon as they are passed to the underlying transport for
-sending. QMux stacks do not track delivery nor retransmit lost information. For
+not use ACK frames. QMux stacks do not track delivery nor retransmit lost information. For
 the stream state machinery defined in {{Section 3 of QUIC}}, references to
 acknowledgment are interpreted as though acknowledgments occurs as soon as
 data is passed to the underlying transport. This means that applications cannot
