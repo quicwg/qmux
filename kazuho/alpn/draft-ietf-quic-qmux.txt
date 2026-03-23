@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 19 September 2026                                    Cloudflare
+Expires: 24 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           18 March 2026
+                                                           23 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 September 2026.
+   This Internet-Draft will expire on 24 September 2026.
 
 Copyright Notice
 
@@ -454,6 +454,12 @@ Table of Contents
    ALPN protocol identifiers identify the application protocol in use.
    Application protocols that use QMux over TLS MUST designate their
    ALPN identifier and specify that they use QMux.
+
+   When using ALPN, endpoints MUST abort the TLS handshake with a
+   no_application_protocol TLS alert (Section 3.2 of [ALPN]) if an
+   application protocol is not negotiated.  While ALPN only requires
+   that servers use this alert, QMux clients MUST also abort the
+   handshake when ALPN negotiation fails.
 
    QMux is not itself an application protocol and does not have an ALPN
    identifier.
