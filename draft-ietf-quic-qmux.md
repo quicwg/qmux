@@ -355,9 +355,9 @@ reads on any single QUIC stream, as doing so can prevent processing of frames
 required for connection progress.
 
 Continuing to read does not imply unbounded buffering of STREAM data, as the
-amount of stream data a peer can send is limited by QUIC flow control. For
-DATAGRAM frames, endpoints MAY drop received datagrams when they cannot be
-promptly delivered to the application.
+amount of stream data a peer can send is limited by flow control
+({{Section 4 of QUIC}}). For DATAGRAM frames, endpoints MAY drop received
+datagrams when they cannot be promptly delivered to the application.
 
 
 # Closing the Connection
