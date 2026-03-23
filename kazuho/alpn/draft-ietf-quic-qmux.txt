@@ -453,7 +453,7 @@ Table of Contents
 
    ALPN protocol identifiers identify the application protocol in use.
    Application protocols that use QMux over TLS MUST designate their
-   ALPN identifier and specify that they use QMux.
+   ALPN identifier and specify that they use QMux version 1.
 
    When using ALPN, endpoints MUST abort the TLS handshake with a
    no_application_protocol TLS alert (Section 3.2 of [ALPN]) if an
@@ -547,7 +547,7 @@ Table of Contents
    Similarly, when TLS is the underlying transport, application
    protocols built on top of the QMux counterparts of such QUIC versions
    can rely on ALPN to negotiate both the application protocol and the
-   underlying QMux version.
+   underlying QMux version (Section 7.1).
 
    When TLS is not the underlying transport, endpoints can use the first
    8 bytes exchanged on the transport (i.e., the type field of the

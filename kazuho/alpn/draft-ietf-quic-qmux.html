@@ -1685,7 +1685,7 @@ closed immediately.<a href="#section-6-2" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-7-1">When QMux is used over TLS, TLS provides capabilities in addition to
 confidentiality and integrity protection.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<div id="protocol-negotiation">
+<div id="negotiation">
 <section id="section-7.1">
         <h3 id="name-protocol-negotiation">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-protocol-negotiation" class="section-name selfRef">Protocol Negotiation</a>
@@ -1696,7 +1696,7 @@ Negotiation (ALPN) <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span> to 
 another mechanism is used for agreeing on an application protocol.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS <span class="bcp14">MUST</span> designate their ALPN identifier and
-specify that they use QMux.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+specify that they use QMux version 1.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 <p id="section-7.1-3">When using ALPN, endpoints <span class="bcp14">MUST</span> abort the TLS handshake with a
 no_application_protocol TLS alert (<span><a href="https://rfc-editor.org/rfc/rfc7301#section-3.2" class="relref">Section 3.2</a> of [<a href="#ALPN" class="cite xref">ALPN</a>]</span>) if an application
 protocol is not negotiated. While ALPN only requires that servers use this
@@ -1785,7 +1785,7 @@ new identifier for the TLS Application-Layer Protocol Negotiation (ALPN)
 extension <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
-both the application protocol and the underlying QMux version.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+both the application protocol and the underlying QMux version (<a href="#negotiation" class="auto internal xref">Section 7.1</a>).<a href="#section-9.1-2" class="pilcrow">¶</a></p>
 <p id="section-9.1-3">When TLS is not the underlying transport, endpoints can use the first 8 bytes
 exchanged on the transport (i.e., the type field of the
 QX_TRANSPORT_PARAMETERS frame in the encoded form) to identify whether QMux is
