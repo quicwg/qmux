@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 6 September 2026                                     Cloudflare
+Expires: 24 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            5 March 2026
+                                                           23 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 September 2026.
+   This Internet-Draft will expire on 24 September 2026.
 
 Copyright Notice
 
@@ -332,9 +332,9 @@ Table of Contents
    peer's QX_TRANSPORT_PARAMETERS frame has been received and processed.
    This can delay use of peer-advertised flow control credit and can
    therefore block sending stream data before peer Transport Parameters
-   arrive; however, when QMux runs over TLS 1.3, this does not generally
-   add a full round trip for clients on a full handshake.  Servers can
-   send the QX_TRANSPORT_PARAMETERS frame immediately after the server's
+   arrive.  When QMux runs over TLS 1.3, this does not necessarily add a
+   full round trip for clients on a full handshake.  Servers can send
+   the QX_TRANSPORT_PARAMETERS frame immediately after the server's
    Finished message, and clients can receive and process the Transport
    Parameters as soon as they obtain the keys needed to process
    application data.
@@ -651,7 +651,7 @@ Table of Contents
 
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
-              Vasiliev, V., and G. Xie, "WebTransport over HTTP/2", Work
+              Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
               2 March 2026, <https://datatracker.ietf.org/doc/html/
               draft-ietf-webtrans-http2-14>.
