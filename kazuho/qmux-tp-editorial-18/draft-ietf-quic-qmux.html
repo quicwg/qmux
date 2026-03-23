@@ -1533,12 +1533,12 @@ field in this QX_TRANSPORT_PARAMETERS frame.<a href="#section-4.2-5.2.1" class="
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.2-6">The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints.
-Endpoints <span class="bcp14">MUST</span> send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying
-transport becomes available. Note neither endpoint needs to wait for the
-peer's Transport Parameters before sending its own, as Transport Parameters are
-a unilateral declaration of an endpoint's capabilities
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>).<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints. To allow
+peers to open streams and start sending data as early as possible, endpoints
+<span class="bcp14">MUST</span> send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying transport
+becomes available for sending. Neither endpoint needs to wait for the peer's
+Transport Parameters before sending its own, as Transport Parameters are a
+unilateral declaration of an endpoint's capabilities (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>).<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <p id="section-4.2-7">Except when sending 0-RTT data using remembered transport parameters as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>, endpoints <span class="bcp14">MUST NOT</span> send frames whose use
 depends on peer transport parameters until the peer's QX_TRANSPORT_PARAMETERS
