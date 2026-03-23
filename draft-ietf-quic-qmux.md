@@ -92,7 +92,7 @@ provide confidentially and integrity.
 
 QUIC packet headers are not used.
 
-For exchanging the Transport Parameters, a new frame called
+For exchanging the transport parameters, a new frame called
 QX_TRANSPORT_PARAMETERS frame is defined.
 
 
@@ -216,7 +216,7 @@ from multiple streams.
 
 ## QX_TRANSPORT_PARAMETERS Frames
 
-In QMux, Transport Parameters are exchanged as frames.
+In QMux, transport parameters are exchanged as frames.
 
 QX_TRANSPORT_PARAMETERS frames are formatted as shown in
 {{fig-qx-transport-parameters}}.
@@ -234,19 +234,19 @@ QX_TRANSPORT_PARAMETERS frames contain the following fields:
 
 Length:
 
-: A variable-length integer specifying the length of the Transport Parameters
+: A variable-length integer specifying the length of the transport parameters
   field in this QX_TRANSPORT_PARAMETERS frame.
 
 Transport Parameters:
 
-: The Transport Parameters. The encoding of the payload is as defined in
+: The transport parameters. The encoding of the payload is as defined in
   {{Section 18 of QUIC}}.
 
 
 The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints.
 Endpoints MUST send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying
 transport becomes available. Note neither endpoint needs to wait for the
-peer's Transport Parameters before sending its own, as Transport Parameters are
+peer's transport parameters before sending its own, as transport parameters are
 a unilateral declaration of an endpoint's capabilities
 ({{Section 7.4 of QUIC}}).
 
@@ -297,12 +297,12 @@ carrying the largest Sequence Number that the endpoint has received.
 
 # Transport Parameters
 
-QMux uses a subset of Transport Parameters defined in QUIC version 1. Also, one
+QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
 new Transport Parameter specific to QMux is defined.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
-In QMux, use of the following Transport Parameters is allowed.
+In QMux, use of the following transport parameters is allowed.
 
 * max_idle_timeout
 * initial_max_data
@@ -312,16 +312,16 @@ In QMux, use of the following Transport Parameters is allowed.
 * initial_max_streams_bidi
 * initial_max_streams_uni
 
-The definition of these Transport Parameters are unchanged.
+The definition of these transport parameters are unchanged.
 
-Use of other Transport Parameters defined in QUIC version 1 is prohibited. When
-an endpoint receives one of the prohibited Transport Parameters, the endpoint
+Use of other transport parameters defined in QUIC version 1 is prohibited. When
+an endpoint receives one of the prohibited transport parameters, the endpoint
 MUST close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
-Endpoints MUST NOT send Transport Parameters that extend QUIC version 1, unless
+Endpoints MUST NOT send transport parameters that extend QUIC version 1, unless
 they are specified to be compatible with QMux.
 
-When receiving Transport Parameters not defined in QUIC version 1, receivers
+When receiving transport parameters not defined in QUIC version 1, receivers
 MUST ignore them unless they are specified to be usable on QMux.
 
 
@@ -360,10 +360,10 @@ closed immediately.
 TLS 1.3 introduced the concept of early data (also knows as 0-RTT data).
 
 When using QMux on top of TLS that supports early data, clients MAY use early
-data when resuming a connection, by reusing certain Transport Parameters as
+data when resuming a connection, by reusing certain transport parameters as
 defined in {{Section 7.4.1 of QUIC}}.
 
-Similarly, when accepting early data, the servers MUST send Transport Parameters
+Similarly, when accepting early data, the servers MUST send transport parameters
 that obey to the restrictions defined in {{Section 7.4.1 of QUIC}}.
 
 
@@ -388,8 +388,8 @@ DATAGRAM frames without the Length field), their size is determined by the
 `max_frame_size` Transport Parameter ({{max_frame_size}}).
 
 Apart from this, the encoding and semantics of the Unreliable Datagram Extension
-remain unchanged. The use of the extension is negotiated via the Transport
-Parameters.
+remain unchanged. The use of the extension is negotiated via the transport
+parameters.
 
 As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.
@@ -409,8 +409,8 @@ involves a retry. Compatible Version Negotiation for QUIC
 between compatible versions during connection establishment without retrying.
 
 By contrast, QMux does not establish connections by itself; the connections are
-set up by the underlying substrate, and QMux exchanges only the Transport
-Parameters after they are established.
+set up by the underlying substrate, and QMux exchanges only the transport
+parameters after they are established.
 
 Due to these differences, the negotiation mechanisms used by QUIC and QMux will
 differ.
