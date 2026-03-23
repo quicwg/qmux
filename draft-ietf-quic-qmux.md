@@ -359,7 +359,7 @@ CONNECTION_CLOSE frame or by an idle timeout.
 Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
 Endpoints reset the idle timer when sending or receiving QMux frames. When no
 other traffic is available, QX_PING frames can be used to elicit a peer
-response and prevent unnecessary idle timeout.
+response and keep the connection active.
 
 Unlike QUIC version 1, there is no draining period; once an endpoint sends or
 receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
