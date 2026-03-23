@@ -453,7 +453,10 @@ Table of Contents
 
    ALPN protocol identifiers identify the application protocol in use.
    Application protocols that use QMux over TLS MUST designate their
-   ALPN identifier and specify that they use QMux version 1.
+   ALPN identifier and specify that they use QMux version 1.  The
+   identifier MUST be different from that of QUIC version 1, to retain
+   compatibility with Service Binding and Parameter Specification via
+   the DNS [SVCB].
 
    When using ALPN, endpoints MUST abort the TLS handshake with a
    no_application_protocol TLS alert (Section 3.2 of [ALPN]) if an
@@ -665,6 +668,11 @@ Table of Contents
    [QUIC-TLS] Thomson, M., Ed. and S. Turner, Ed., "Using TLS to Secure
               QUIC", RFC 9001, DOI 10.17487/RFC9001, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9001>.
+
+   [SVCB]     Schwartz, B., Bishop, M., and E. Nygren, "Service Binding
+              and Parameter Specification via the DNS (SVCB and HTTPS
+              Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
+              November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
 
    [TCP]      Eddy, W., Ed., "Transmission Control Protocol (TCP)",
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
