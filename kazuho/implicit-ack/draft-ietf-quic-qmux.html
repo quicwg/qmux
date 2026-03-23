@@ -1421,10 +1421,7 @@ Frames related to the cryptographic handshake are not used because an underlying
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <p id="section-4-5">QMux relies on the underlying transport for reliable delivery and therefore does
-not use ACK frames. In contrast to QUIC version 1 that tracks delivery of frames
-and retransmit lost information (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-13.3" class="relref">Section 13.3</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>), frames in QMux are
-considered delivered as soon as they are passed to the underlying transport for
-sending. QMux stacks do not track delivery nor retransmit lost information. For
+not use ACK frames. QMux stacks do not track delivery nor retransmit lost information. For
 the stream state machinery defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-3" class="relref">Section 3</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>, references to
 acknowledgment are interpreted as though acknowledgments occurs as soon as
 data is passed to the underlying transport. This means that applications cannot
