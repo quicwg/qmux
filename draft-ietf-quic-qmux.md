@@ -352,7 +352,7 @@ MUST ignore them unless they are specified to be usable on QMux.
 ## max_record_size Transport Parameter {#max_record_size}
 
 The `max_record_size` Transport Parameter (0xTBD) is a variable-length integer
-specifying the maximum size of the Frames field of a QMux Record that the peer
+specifying the maximum value of the Size field of a QMux Record that the peer
 can send, in the unit of bytes.
 
 The initial value of the `max_record_size` Transport Parameter is 16382.
