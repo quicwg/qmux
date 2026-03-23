@@ -11,7 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { pick, rules } from './quic-pick/quic-pick.js';
+import { pick, permalink } from './quic-pick/quic-pick.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -151,19 +151,6 @@ function addRows(field, newRows) {
 }
 
 // ---------------------------------------------------------------------------
-// Permalink URL
-// ---------------------------------------------------------------------------
-
-function permalink(seed, field, count, size, codepoint) {
-  const base = 'https://martinthomson.github.io/quic-pick/';
-  const cpStr = `0x${codepoint.toString(16).padStart(size * 2, '0')}`;
-  let url = `${base}#seed=${encodeURIComponent(seed)};field=${field};codepoint=${encodeURIComponent(cpStr)}`;
-  if (count > 1n) url += `;count=${count}`;
-  url += `;size=${size}`;
-  return url;
-}
-
-// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -194,13 +181,13 @@ async function main() {
 
   addRows('frame', [
     ...magicValueRows('frame', draftVersion),
-    `| QX_PING (request) | ${pad(frameBase)} | ${draftVersion} | ${permalink(frameSeed, 'frame', 2n, SIZE, frameBase)} |`,
+    `| QX_PING (request) | ${pad(frameBase)} | ${draftVersion} | ${permalink({ seed: frameSeed, field: 'frame', codepoint: frameBase, bytes: SIZE, count: 2n })} |`,
     `| QX_PING (response) | ${pad(frameBase + 1n)} | ${draftVersion} | (consecutive with above) |`,
   ]);
 
   addRows('tp', [
     ...magicValueRows('tp', draftVersion),
-    `| max_frame_size | ${pad(tpVal)} | ${draftVersion} | ${permalink(tpSeed, 'tp', 1n, SIZE, tpVal)} |`,
+    `| max_frame_size | ${pad(tpVal)} | ${draftVersion} | ${permalink({ seed: tpSeed, field: 'tp', codepoint: tpVal, bytes: SIZE })} |`,
   ]);
 
   console.log('');
