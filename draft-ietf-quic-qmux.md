@@ -165,7 +165,8 @@ and retransmit lost information ({{Section 13.3 of QUIC}}), frames in QMux are
 considered delivered as soon as they are passed to the underlying transport for
 sending. QMux stacks do not track delivery nor retransmit lost information. For
 the stream state machinery defined in {{Section 3 of QUIC}}, references to
-acknowledgment are interpreted accordingly. This means that applications cannot
+acknowledgment are interpreted as though acknowledgments occurs as soon as
+data is passed to the underlying transport. This means that applications cannot
 assume that the peer application has consumed data based solely on transport
 events. ACKs in QUIC version 1 do not provide that guarantee either.
 
