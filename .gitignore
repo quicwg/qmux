@@ -1,5 +1,4 @@
 *.html
-!quic-pick.html
 *.pdf
 *.redxml
 *.swp

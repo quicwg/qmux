@@ -1,0 +1,4 @@
+[submodule "quic-pick"]
+	path = quic-pick
+	url = https://github.com/LPardue/quic-pick.git
+	branch = extract-module

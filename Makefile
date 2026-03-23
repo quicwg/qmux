@@ -1,20 +1,20 @@
 LIBDIR := lib
 include $(LIBDIR)/main.mk
 
-QUIC_PICK_URL := https://raw.githubusercontent.com/martinthomson/quic-pick/main/index.html
-QUIC_PICK_HTML := quic-pick.html
-
 .PHONY: codepoints apply-codepoints update-quic-pick
 
-codepoints: $(QUIC_PICK_HTML)
+codepoints: quic-pick/quic-pick.js
 	node pick-codepoints.js
 
 apply-codepoints:
 	node apply-codepoints.js
 
 update-quic-pick:
-	curl -sS -o $(QUIC_PICK_HTML) $(QUIC_PICK_URL)
-	@echo "quic-pick.html updated — review and commit if changed"
+	git submodule update --remote quic-pick
+	@echo "quic-pick submodule updated — review and commit if changed"
+
+quic-pick/quic-pick.js:
+	git submodule update --init quic-pick
 
 $(LIBDIR)/main.mk:
 ifneq (,$(shell grep "path *= *$(LIBDIR)" .gitmodules 2>/dev/null))
