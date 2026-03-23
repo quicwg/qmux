@@ -8,8 +8,8 @@ in the draft document.
 
 When preparing a new draft version:
 
-1. Ensure `quic-pick.html` is up to date: `make update-quic-pick`
-2. Ensure the previous version is tagged (required as part of the publish workflow any way
+1. Ensure the quic-pick submodule is up to date: `make update-quic-pick`
+2. Ensure the previous version is tagged (required as part of the publish workflow anyway)
 3. Generate codepoints for the next version: `make codepoints`
 4. Apply the new values to the draft: `make apply-codepoints`
 5. Review the changes, then commit everything together.
