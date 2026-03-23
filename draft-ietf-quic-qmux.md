@@ -365,7 +365,7 @@ When QMux is used over TLS, TLS provides capabilities in addition to
 confidentiality and integrity protection.
 
 
-## Protocol Negotiation
+## Protocol Negotiation {#negotiation}
 
 As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
 over QMux over TLS, endpoints MUST use TLS Application-Layer Protocol
@@ -374,7 +374,7 @@ another mechanism is used for agreeing on an application protocol.
 
 ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS MUST designate their ALPN identifier and
-specify that they use QMux.
+specify that they use QMux version 1.
 
 When using ALPN, endpoints MUST abort the TLS handshake with a
 no_application_protocol TLS alert ({{Section 3.2 of ALPN}}) if an application
@@ -463,7 +463,7 @@ extension {{ALPN}}.
 
 Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
-both the application protocol and the underlying QMux version.
+both the application protocol and the underlying QMux version ({{negotiation}}).
 
 When TLS is not the underlying transport, endpoints can use the first 8 bytes
 exchanged on the transport (i.e., the type field of the
