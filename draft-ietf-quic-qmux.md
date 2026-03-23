@@ -123,17 +123,26 @@ Congestion control:
   Implementations of QMux simply write outgoing frames to the transport when
   that transport permits.
 
-Confidentially and Integrity:
+Confidentiality and Integrity:
 
 : Unless used upon endpoints between which tampering or monitoring is a
   non-concern, the transport provides confidentially and integrity protection.
 
-TLS over TCP provides all these capabilities.
+Application Protocol Negotiation:
 
-UNIX sockets are an example that provides only the first two. Congestion control
-is not employed, as UNIX sockets do not face a shared bottleneck.
-Confidentiality and integrity protection are deemed unnecessary in environments
-where the operating system is trusted.
+: To avoid cross-protocol confusion, the underlying transport provides a
+  mechanism for endpoints to agree on the protocols in use. Without such a
+  mechanism, QMux and application protocols built on top of QMux can only be
+  used between endpoints that have out-of-band agreement on those protocols.
+
+TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
+(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities.
+
+UNIX sockets are an example that provide in-order and guaranteed delivery only.
+Congestion control is not employed, as UNIX sockets do not face a shared
+bottleneck. Confidentiality and integrity protection are deemed unnecessary in
+environments where the operating system is trusted. Agreement on the application
+protocol can be achieved by using different listening sockets.
 
 
 # QUIC Frames
@@ -368,9 +377,9 @@ confidentiality and integrity protection.
 ## Protocol Negotiation {#negotiation}
 
 As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
-over QMux over TLS, endpoints MUST use TLS Application-Layer Protocol
-Negotiation (ALPN) {{!ALPN=RFC7301}} to agree on an application protocol, unless
-another mechanism is used for agreeing on an application protocol.
+over QMux over TLS, endpoints MUST use ALPN {{ALPN}} to agree on an application
+protocol, unless another mechanism is used for agreeing on an application
+protocol.
 
 ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS MUST designate their ALPN identifier and
