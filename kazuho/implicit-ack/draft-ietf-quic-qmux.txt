@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 6 September 2026                                     Cloudflare
+Expires: 24 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            5 March 2026
+                                                           23 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 September 2026.
+   This Internet-Draft will expire on 24 September 2026.
 
 Copyright Notice
 
@@ -442,8 +442,7 @@ Table of Contents
    Unlike QUIC version 1, idle timeout handling does not rely on ACK
    frames.  Endpoints reset the idle timer when sending or receiving
    QMux frames.  When no other traffic is available, QX_PING frames can
-   be used to elicit a peer response and prevent unnecessary idle
-   timeout.
+   be used to elicit a peer response and keep the connection active.
 
    Unlike QUIC version 1, there is no draining period; once an endpoint
    sends or receives the CONNECTION_CLOSE frame or reaches the idle
@@ -650,7 +649,7 @@ Table of Contents
 
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
-              Vasiliev, V., and G. Xie, "WebTransport over HTTP/2", Work
+              Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
               2 March 2026, <https://datatracker.ietf.org/doc/html/
               draft-ietf-webtrans-http2-14>.
