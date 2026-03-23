@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 18 September 2026                                    Cloudflare
+Expires: 24 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           17 March 2026
+                                                           23 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 September 2026.
+   This Internet-Draft will expire on 24 September 2026.
 
 Copyright Notice
 
@@ -433,7 +433,7 @@ Table of Contents
 5.2.  max_record_size Transport Parameter
 
    The max_record_size Transport Parameter (0xTBD) is a variable-length
-   integer specifying the maximum size of the Frames field of a QMux
+   integer specifying the maximum value of the Size field of a QMux
    Record that the peer can send, in the unit of bytes.
 
    The initial value of the max_record_size Transport Parameter is
