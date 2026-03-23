@@ -250,15 +250,15 @@ peer's Transport Parameters before sending its own, as Transport Parameters are
 a unilateral declaration of an endpoint's capabilities
 ({{Section 7.4 of QUIC}}).
 
-Except when sending 0-RTT data using remembered Transport Parameters as
+Except when sending 0-RTT data using remembered transport parameters as
 described in {{Section 7.4.1 of QUIC}}, endpoints MUST NOT send frames whose use
-depends on peer Transport Parameters until the peer's QX_TRANSPORT_PARAMETERS
+depends on peer transport parameters until the peer's QX_TRANSPORT_PARAMETERS
 frame has been received and processed. This can delay use of peer-advertised
 flow control credit and can therefore block sending stream data before peer
-Transport Parameters arrive. When QMux runs over TLS 1.3, this does not
+transport parameters arrive. When QMux runs over TLS 1.3, this does not
 necessarily add a full round trip for clients on a full handshake. Servers can
 send the QX_TRANSPORT_PARAMETERS frame immediately after the server's Finished
-message, and clients can receive and process the Transport Parameters as soon as
+message, and clients can receive and process the transport parameters as soon as
 they obtain the keys needed to process application data.
 
 If the first frame being received by an endpoint is not a
@@ -374,10 +374,10 @@ When using QMux on top of TLS that supports early data, clients MAY use early
 data when resuming a connection, by reusing certain Transport Parameters as
 defined in {{Section 7.4.1 of QUIC}}.
 
-Similarly, when accepting early data, servers MUST send Transport Parameters
+Similarly, when accepting early data, servers MUST send transport parameters
 that comply with the restrictions in {{Section 7.4.1 of QUIC}}. This preserves
 QUIC's 0-RTT compatibility model and avoids requiring an additional round trip
-to learn peer Transport Parameters on resumed connections.
+to learn peer transport parameters on resumed connections.
 
 
 # Extensions
