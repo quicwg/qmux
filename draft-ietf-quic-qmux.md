@@ -374,7 +374,9 @@ another mechanism is used for agreeing on an application protocol.
 
 ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS MUST designate their ALPN identifier and
-specify that they use QMux version 1.
+specify that they use QMux version 1. The identifier MUST be different from that
+of QUIC version 1, to retain compatibility with Service Binding and Parameter
+Specification via the DNS {{?SVCB=RFC9460}}.
 
 When using ALPN, endpoints MUST abort the TLS handshake with a
 no_application_protocol TLS alert ({{Section 3.2 of ALPN}}) if an application
