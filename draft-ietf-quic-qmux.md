@@ -243,12 +243,12 @@ Transport Parameters:
   {{Section 18 of QUIC}}.
 
 
-The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints.
-Endpoints MUST send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying
-transport becomes available. Note neither endpoint needs to wait for the
-peer's Transport Parameters before sending its own, as Transport Parameters are
-a unilateral declaration of an endpoint's capabilities
-({{Section 7.4 of QUIC}}).
+The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints. To allow
+peers to open streams and start sending data as early as possible, endpoints
+MUST send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying transport
+becomes available for sending. Neither endpoint needs to wait for the peer's
+Transport Parameters before sending its own, as Transport Parameters are a
+unilateral declaration of an endpoint's capabilities ({{Section 7.4 of QUIC}}).
 
 Except when sending 0-RTT data using remembered transport parameters as
 described in {{Section 7.4.1 of QUIC}}, endpoints MUST NOT send frames whose use
