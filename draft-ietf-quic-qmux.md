@@ -123,10 +123,11 @@ Congestion control:
   Implementations of QMux simply write outgoing frames to the transport when
   that transport permits.
 
-Confidentiality and Integrity:
+Authentication, confidentiality, and integrity protection:
 
 : Unless used upon endpoints between which tampering or monitoring is a
-  non-concern, the transport provides confidentially and integrity protection.
+  non-concern, the transport provides peer authentication, confidentially, and
+  integrity protection.
 
 Application Protocol Negotiation:
 
