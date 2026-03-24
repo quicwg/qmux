@@ -384,7 +384,7 @@ protocol.
 ALPN protocol identifiers identify the application protocol in use. Application
 protocols that use QMux over TLS MUST designate their ALPN identifier and
 specify that they use QMux version 1. The identifier for a mapping to QMux MUST
-be different from the mapping of the same protocol to QUIC version 1,
+be different from the mapping of the same protocol to QUIC,
 to retain compatibility with Service Binding and Parameter Specification
 via the DNS {{?SVCB=RFC9460}}.
 
