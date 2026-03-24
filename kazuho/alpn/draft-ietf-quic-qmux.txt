@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 24 September 2026                                    Cloudflare
+Expires: 25 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           23 March 2026
+                                                           24 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2026.
+   This Internet-Draft will expire on 25 September 2026.
 
 Copyright Notice
 
@@ -463,8 +463,8 @@ Table of Contents
    Application protocols that use QMux over TLS MUST designate their
    ALPN identifier and specify that they use QMux version 1.  The
    identifier for a mapping to QMux MUST be different from the mapping
-   of the same protocol to QUIC version 1, to retain compatibility with
-   Service Binding and Parameter Specification via the DNS [SVCB].
+   of the same protocol to QUIC, to retain compatibility with Service
+   Binding and Parameter Specification via the DNS [SVCB].
 
    When using ALPN, endpoints MUST abort the TLS handshake with a
    no_application_protocol TLS alert (Section 3.2 of [ALPN]) if an
