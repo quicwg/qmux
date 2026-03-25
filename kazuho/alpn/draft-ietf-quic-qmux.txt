@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 25 September 2026                                    Cloudflare
+Expires: 26 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           24 March 2026
+                                                           25 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 September 2026.
+   This Internet-Draft will expire on 26 September 2026.
 
 Copyright Notice
 
@@ -481,7 +481,7 @@ Table of Contents
    of application protocols using a draft version of QMux, applications
    should specify, for each ALPN identifier they define, which draft
    version of QMux is used.  As an example, an ALPN identifier "myapp-
-   12t" could identify version 12 of "myapp" over TCP and QMux,
+   12qx" could identify version 12 of "myapp" over TCP and QMux,
    identifying the use of a specific QMux draft version in its
    specification. the use of QMux draft-05.
 
