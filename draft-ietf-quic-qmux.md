@@ -400,7 +400,7 @@ TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
 format might change. Therefore, when testing interoperability of application
 protocols using a draft version of QMux, applications should specify, for each
 ALPN identifier they define, which draft version of QMux is used. As an example,
-an ALPN identifier "myapp-12t" could identify version 12 of "myapp" over TCP and QMux,
+an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP and QMux,
 identifying the use of a specific QMux draft version in its specification.
 the use of QMux draft-05.
 
