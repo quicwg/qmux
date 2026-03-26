@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 24 September 2026                                    Cloudflare
+Expires: 27 September 2026                                    Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           23 March 2026
+                                                           26 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2026.
+   This Internet-Draft will expire on 27 September 2026.
 
 Copyright Notice
 
@@ -236,7 +236,7 @@ Table of Contents
 
    QMux relies on the underlying transport for reliable delivery and
    therefore does not use ACK frames.  QMux stacks do not track delivery
-   nor retransmit lost information.  For the stream state machinery
+   or retransmit lost data or frames.  For the stream state machinery
    defined in Section 3 of [QUIC], references to acknowledgment are
    interpreted as though acknowledgments occurs as soon as data is
    passed to the underlying transport.  This means that applications
