@@ -155,6 +155,7 @@ version 1, with the exception to the specific changes made to the STREAM frames,
 as detailed in {{stream-frames}}.
 
 Use of other frames defined in QUIC version 1 is prohibited for various reasons.
+
 Frames related to the cryptographic handshake are not used because an underlying
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.
