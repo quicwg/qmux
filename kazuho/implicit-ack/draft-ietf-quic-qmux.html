@@ -1421,12 +1421,12 @@ as detailed in <a href="#stream-frames" class="auto internal xref">Section 4.1</
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.<a href="#section-4-5" class="pilcrow">¶</a></p>
 <p id="section-4-6">QMux relies on the underlying transport for reliable delivery and therefore does
-not use ACK frames. QMux stacks do not track delivery or retransmit lost data or frames. For
-the stream state machinery defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-3" class="relref">Section 3</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>, references to
-acknowledgment are interpreted as though acknowledgments occurs as soon as
-data is passed to the underlying transport. As in QUIC version 1, applications cannot
-assume that the peer application has consumed data based solely on transport
-events.<a href="#section-4-6" class="pilcrow">¶</a></p>
+not use ACK frames. QMux stacks do not track delivery or retransmit lost data or
+frames. For the stream state machinery defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-3" class="relref">Section 3</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>,
+references to acknowledgment are interpreted as though acknowledgments occurs as
+soon as data is passed to the underlying transport. As in QUIC version 1,
+applications cannot assume that the peer application has consumed data based
+solely on transport events.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <p id="section-4-7">The full list of prohibited frames is:<a href="#section-4-7" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-8.1">
