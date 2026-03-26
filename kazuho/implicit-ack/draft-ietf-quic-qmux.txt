@@ -229,10 +229,12 @@ Table of Contents
    Section 4.1.
 
    Use of other frames defined in QUIC version 1 is prohibited for
-   various reasons.  Frames related to the cryptographic handshake are
-   not used because an underlying security layer can provide equivalent
-   features.  Use of frames that communicate Connection IDs and those
-   related to path migration is forbidden.
+   various reasons.
+
+   Frames related to the cryptographic handshake are not used because an
+   underlying security layer can provide equivalent features.  Use of
+   frames that communicate Connection IDs and those related to path
+   migration is forbidden.
 
    QMux relies on the underlying transport for reliable delivery and
    therefore does not use ACK frames.  QMux stacks do not track delivery
