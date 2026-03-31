@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 24 September 2026                                    Cloudflare
+Expires: 2 October 2026                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           23 March 2026
+                                                           31 March 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2026.
+   This Internet-Draft will expire on 2 October 2026.
 
 Copyright Notice
 
@@ -323,8 +323,8 @@ Table of Contents
    endpoints.  To allow peers to open streams and start sending data as
    early as possible, endpoints MUST send the QX_TRANSPORT_PARAMETERS
    frame as soon as the underlying transport becomes available for
-   sending.  Neither endpoint needs to wait for the peer's Transport
-   Parameters before sending its own, as Transport Parameters are a
+   sending.  Neither endpoint needs to wait for the peer's transport
+   parameters before sending its own, as transport parameters are a
    unilateral declaration of an endpoint's capabilities (Section 7.4 of
    [QUIC]).
 
