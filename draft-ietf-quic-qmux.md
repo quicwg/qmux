@@ -163,7 +163,7 @@ units: a frame MUST fit entirely within a single QMux Record and MUST NOT span
 multiple QMux Records.
 
 Senders can choose record boundaries freely, subject to the `max_record_size`
-Transport Parameter ({{max_record_size}}). Receivers process frames within each
+transport parameter ({{max_record_size}}). Receivers process frames within each
 record, using the record boundary as the payload boundary for frames that omit
 an explicit length.
 
@@ -370,16 +370,16 @@ MUST ignore them unless they are specified to be usable on QMux.
 
 ## max_record_size Transport Parameter {#max_record_size}
 
-The `max_record_size` Transport Parameter (0xTBD) is a variable-length integer
+The `max_record_size` transport parameter (0xTBD) is a variable-length integer
 specifying the maximum value of the Size field of a QMux Record that the peer
 can send, in the unit of bytes.
 
-The initial value of the `max_record_size` Transport Parameter is 16382.
+The initial value of the `max_record_size` transport parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
 Size field and a 16382-byte Frames field, aligning with the default capacity of
 a full-sized TLS record.
 
-By sending the Transport Parameter, the maximum record size can only be
+By sending the transport parameter, the maximum record size can only be
 increased. When receiving a value below the initial value, receivers MUST close
 the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
@@ -511,7 +511,7 @@ is that, even when TLS is not in use, no additional round-trip is incurred for
 version negotiation.
 
 While QMux version 1 does not specify a concrete method, new versions might use
-the version_information Transport Parameter ({{Section 3 of QUIC-CVN}}) to
+the version_information transport parameter ({{Section 3 of QUIC-CVN}}) to
 discover supported versions and coordinate the switch.
 
 
