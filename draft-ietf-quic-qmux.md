@@ -380,6 +380,22 @@ maximum, receivers MUST close the connection with an error of type
 FRAME_ENCODING_ERROR.
 
 
+# Forward Progress and Flow Control {#forward-progress-flow-control}
+
+To avoid deadlock due to flow control in the underlying transport, endpoints
+MUST continue reading from the underlying transport even when delivery of STREAM
+data to the application is temporarily blocked.
+
+Endpoints MUST NOT couple reads from the underlying transport to application
+reads on any single QUIC stream, as doing so can prevent processing of frames
+required for connection progress.
+
+Continuing to read does not imply unbounded buffering of STREAM data, as the
+amount of stream data a peer can send is limited by flow control
+({{Section 4 of QUIC}}). For DATAGRAM frames, endpoints MAY drop received
+datagrams when they cannot be promptly delivered to the application.
+
+
 # Closing the Connection
 
 As is with QUIC version 1, a connection can be closed either by a
@@ -507,7 +523,9 @@ throughput.
 
 # Security Considerations
 
-TODO Security
+Failure to follow the forward-progress requirements in
+{{forward-progress-flow-control}} can lead to deadlock and can be exploited for
+resource-exhaustion attacks.
 
 
 # IANA Considerations
