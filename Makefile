@@ -1,20 +1,23 @@
 LIBDIR := lib
 include $(LIBDIR)/main.mk
 
-.PHONY: codepoints apply-codepoints update-quic-pick
+.PHONY: pick-codepoints apply-codepoints pick-and-apply-codepoints update-quic-pick
 
-codepoints: codepoints/quic-pick/quic-pick.js
+# Derive codepoints for the next draft version and append them to codepoints.md
+pick-codepoints: update-quic-pick
 	node codepoints/pick-codepoints.js
 
+# Substitute updated codepoint values from codepoints.md into the draft
 apply-codepoints:
 	node codepoints/apply-codepoints.js
 
-update-quic-pick:
-	git submodule update --remote codepoints/quic-pick
-	@echo "quic-pick submodule updated — review and commit if changed"
+# Pick codepoints and apply them to the draft in one step
+pick-and-apply-codepoints: pick-codepoints apply-codepoints
 
-codepoints/quic-pick/quic-pick.js:
-	git submodule update --init codepoints/quic-pick
+# Update the quic-pick submodule to the latest upstream commit
+update-quic-pick:
+	git submodule update --init --remote codepoints/quic-pick
+	@echo "quic-pick submodule updated — review and commit if changed"
 
 $(LIBDIR)/main.mk:
 ifneq (,$(shell grep "path *= *$(LIBDIR)" .gitmodules 2>/dev/null))

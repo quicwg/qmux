@@ -5,10 +5,9 @@
  * selection algorithm, and appends new rows to codepoints.md.
  *
  * Usage:  node pick-codepoints.js
- *         make codepoints
+ *         make pick-codepoints
  */
 
-import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -18,22 +17,14 @@ import { cellsOf, isDataRow, readSection, writeChunks } from './codepoints-table
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// fetch implementation for Node.js, passed to quic-pick for registry loading.
-function fetchFn(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, res => {
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        return resolve(fetchFn(res.headers.location));
-      }
-      if (res.statusCode !== 200) {
-        return reject(new Error(`HTTP ${res.statusCode} fetching ${url}`));
-      }
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve({ text: async () => data }));
-    }).on('error', reject);
-  });
-}
+// Load IANA registry XML from the local quic-pick submodule rather than the
+// network. quic-pick.js passes a full URL; we just use the filename.
+const localRegistry = url => ({
+  text: async () => fs.readFileSync(
+    path.join(__dirname, 'quic-pick', new URL(url).pathname.split('/').pop()),
+    'utf8'
+  )
+});
 
 // Derive the next draft version by finding the highest draft-ietf-quic-qmux-NN
 // git tag and incrementing its number.
@@ -132,10 +123,10 @@ async function main() {
   const tpSeed = `${draftVersion}_tp`;
 
   console.log('Computing frame codepoints...');
-  const frameBase = await pick({ seed: frameSeed, field: 'frame', bytes: SIZE, count: 2n, fetchFn });
+  const frameBase = await pick({ seed: frameSeed, field: 'frame', bytes: SIZE, count: 2n, fetchFn: localRegistry });
 
   console.log('Computing transport parameter codepoint...');
-  const tpVal = await pick({ seed: tpSeed, field: 'tp', bytes: SIZE, fetchFn });
+  const tpVal = await pick({ seed: tpSeed, field: 'tp', bytes: SIZE, fetchFn: localRegistry });
 
   const pad = (v) => '0x' + v.toString(16).padStart(SIZE * 2, '0');
 

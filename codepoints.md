@@ -6,13 +6,14 @@ in the draft document.
 
 ## Workflow
 
-When preparing a new draft version:
+When preparing a new draft version that requires new codepoints (not all versions do):
 
-1. Ensure the quic-pick submodule is up to date: `make update-quic-pick`
-2. Ensure the previous version is tagged (required as part of the publish workflow anyway)
-3. Generate codepoints for the next version: `make codepoints`
-4. Apply the new values to the draft: `make apply-codepoints`
-5. Review the changes, then commit everything together.
+1. Ensure the previous version is tagged (required as part of the publish workflow anyway)
+2. Run `make pick-and-apply-codepoints` to pick codepoints for the next
+   version and apply them to the draft in one step. Or run the steps separately:
+   - `make pick-codepoints` — derive codepoints and append to codepoints.md
+   - `make apply-codepoints` — substitute values into the draft
+3. Review the changes, then commit everything together.
 
 ## Selection column
 
