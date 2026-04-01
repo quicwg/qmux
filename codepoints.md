@@ -15,6 +15,28 @@ When preparing a new draft version that requires new codepoints (not all version
    - `make apply-codepoints` — substitute values into the draft
 3. Review the changes, then commit everything together.
 
+### Renaming a codepoint
+
+When a codepoint is renamed in the draft, keep the table and
+`pick-codepoints.js` in sync with the new name. The substitution
+tooling matches on the hex value, not the name, so `make
+apply-codepoints` will continue to work correctly regardless. Older
+version rows should retain their original names as a historical record.
+
+### Adding a new codepoint
+
+When a new QUIC extension point codepoint is added to the draft:
+
+1. Add a row to the appropriate table in this file for the current draft
+   version. Use a unique placeholder as the codepoint value,
+   incorporating the name to ensure it is unambiguous, e.g.
+   `0xTBD-new_param_name`. Use this same placeholder string in the draft.
+   This ensures `make apply-codepoints` can unambiguously replace it.
+2. Add the codepoint to `pick-codepoints.js` — both the `pick()` call to
+   generate it and the `addRows()` call to record it.
+3. Run `make pick-and-apply-codepoints` to generate the value, record it
+   in this file, and substitute the placeholder in the draft.
+
 ## Selection column
 
 Each row records how its codepoint was selected:

@@ -144,14 +144,14 @@ async function main() {
 
   addRows('tp', [
     ...magicValueRows('tp', draftVersion),
-    `| max_frame_size | ${pad(tpVal)} | ${draftVersion} | ${permalink({ seed: tpSeed, field: 'tp', codepoint: tpVal, bytes: SIZE })} |`,
+    `| max_record_size | ${pad(tpVal)} | ${draftVersion} | ${permalink({ seed: tpSeed, field: 'tp', codepoint: tpVal, bytes: SIZE })} |`,
   ]);
 
   console.log('');
   console.log('Results:');
   console.log(`  QX_PING (request):  ${pad(frameBase)}`);
   console.log(`  QX_PING (response): ${pad(frameBase + 1n)}`);
-  console.log(`  max_frame_size:     ${pad(tpVal)}`);
+  console.log(`  max_record_size:    ${pad(tpVal)}`);
   console.log('');
   console.log('codepoints.md updated.');
 }
