@@ -49,7 +49,7 @@ function parseCodepoints() {
 function buildSubstitutions(sections) {
   const subs = [];
 
-  for (const { header, rows } of sections) {
+  for (const { rows } of sections) {
     const byName = new Map();
     for (const row of rows) {
       if (!byName.has(row.name)) byName.set(row.name, []);
@@ -64,7 +64,7 @@ function buildSubstitutions(sections) {
       if (older.codepoint.includes('TBD')) continue;
       if (newer.codepoint === older.codepoint) continue;
 
-      subs.push({ section: header, name, from: older.codepoint, to: newer.codepoint, fromVersion: older.version, toVersion: newer.version });
+      subs.push({ name, from: older.codepoint, to: newer.codepoint, fromVersion: older.version, toVersion: newer.version });
     }
   }
 
@@ -78,6 +78,8 @@ function applySubstitutions(subs) {
   let changed = false;
 
   for (const sub of subs) {
+    // Escape regex special chars defensively — codepoint strings (0x...) can't
+    // contain them in practice, but this is future-proof for other value formats.
     const count = (draft.match(new RegExp(sub.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
 
     if (count === 0) {

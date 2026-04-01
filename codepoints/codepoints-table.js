@@ -40,7 +40,7 @@ export function readSection(file, header) {
   const separatorLine = lines.findIndex(l => l.startsWith('|---'));
   if (separatorLine === -1) throw new Error(`No table found under "${header}"`);
 
-  return { content, chunks, idx, lines, separatorLine };
+  return { chunks, idx, lines, separatorLine };
 }
 
 // Write updated chunks back to a file.

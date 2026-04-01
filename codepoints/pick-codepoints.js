@@ -18,7 +18,9 @@ import { cellsOf, isDataRow, readSection, writeChunks } from './codepoints-table
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load IANA registry XML from the local quic-pick submodule rather than the
-// network. quic-pick.js passes a full URL; we just use the filename.
+// network. quic-pick.js constructs URLs of the form:
+//   https://martinthomson.github.io/quic-pick/quic.xml
+// We extract the filename and resolve it against the local submodule directory.
 const localRegistry = url => ({
   text: async () => fs.readFileSync(
     path.join(__dirname, 'quic-pick', new URL(url).pathname.split('/').pop()),
@@ -68,7 +70,9 @@ function alreadyHasVersion(draftVersion) {
 // Returns Magic Value rows from a section with the draft version updated to
 // draftVersion. Deduplicates by name so each magic value is carried forward once.
 function magicValueRows(field, draftVersion) {
-  const { lines, separatorLine } = readSection(CODEPOINTS_FILE, SECTIONS.find(s => s.field === field).header);
+  const section = SECTIONS.find(s => s.field === field);
+  if (!section) throw new Error(`Unknown field: ${field}`);
+  const { lines, separatorLine } = readSection(CODEPOINTS_FILE, section.header);
   const seen = new Set();
   return lines.slice(separatorLine + 1)
     .filter(l => isDataRow(l) && l.endsWith('| Magic Value |'))
@@ -88,7 +92,9 @@ function magicValueRows(field, draftVersion) {
 // Add new rows to a section and re-sort the entire table by (name asc, version desc),
 // keeping all rows for the same codepoint name together with newer versions first.
 function addRows(field, newRows) {
-  const { chunks, idx, lines, separatorLine } = readSection(CODEPOINTS_FILE, SECTIONS.find(s => s.field === field).header);
+  const section = SECTIONS.find(s => s.field === field);
+  if (!section) throw new Error(`Unknown field: ${field}`);
+  const { chunks, idx, lines, separatorLine } = readSection(CODEPOINTS_FILE, section.header);
 
   const existingRows = lines.slice(separatorLine + 1).filter(l => isDataRow(l));
   const nonTableLines = lines.slice(separatorLine + 1).filter(l => !isDataRow(l));
