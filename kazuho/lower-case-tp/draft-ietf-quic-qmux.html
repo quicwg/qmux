@@ -1407,7 +1407,7 @@ QUIC frames encoded using QUIC version 1 framing.<a href="#section-3.2-5" class=
 units: a frame <span class="bcp14">MUST</span> fit entirely within a single QMux Record and <span class="bcp14">MUST NOT</span> span
 multiple QMux Records.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 <p id="section-3.2-7">Senders can choose record boundaries freely, subject to the <code>max_record_size</code>
-Transport Parameter (<a href="#max_record_size" class="auto internal xref">Section 5.2</a>). Receivers process frames within each
+transport parameter (<a href="#max_record_size" class="auto internal xref">Section 5.2</a>). Receivers process frames within each
 record, using the record boundary as the payload boundary for frames that omit
 an explicit length.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 <p id="section-3.2-8">If the end of the Frames field is not aligned to a frame boundary (that is, if
@@ -1685,14 +1685,14 @@ they are specified to be compatible with QMux.<a href="#section-5.1-5" class="pi
         <h3 id="name-max_record_size-transport-p">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-max_record_size-transport-p" class="section-name selfRef">max_record_size Transport Parameter</a>
         </h3>
-<p id="section-5.2-1">The <code>max_record_size</code> Transport Parameter (0xTBD) is a variable-length integer
+<p id="section-5.2-1">The <code>max_record_size</code> transport parameter (0xTBD) is a variable-length integer
 specifying the maximum value of the Size field of a QMux Record that the peer
 can send, in the unit of bytes.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">The initial value of the <code>max_record_size</code> Transport Parameter is 16382.
+<p id="section-5.2-2">The initial value of the <code>max_record_size</code> transport parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
 Size field and a 16382-byte Frames field, aligning with the default capacity of
 a full-sized TLS record.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">By sending the Transport Parameter, the maximum record size can only be
+<p id="section-5.2-3">By sending the transport parameter, the maximum record size can only be
 increased. When receiving a value below the initial value, receivers <span class="bcp14">MUST</span> close
 the connection with an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">Endpoints <span class="bcp14">MUST NOT</span> send QMux Records with a Frames field that exceeds the
@@ -1829,7 +1829,7 @@ then switch versions in-band during the session. The advantage of this approach
 is that, even when TLS is not in use, no additional round-trip is incurred for
 version negotiation.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 <p id="section-10.2-2">While QMux version 1 does not specify a concrete method, new versions might use
-the version_information Transport Parameter (<span><a href="https://rfc-editor.org/rfc/rfc9368#section-3" class="relref">Section 3</a> of [<a href="#QUIC-CVN" class="cite xref">QUIC-CVN</a>]</span>) to
+the version_information transport parameter (<span><a href="https://rfc-editor.org/rfc/rfc9368#section-3" class="relref">Section 3</a> of [<a href="#QUIC-CVN" class="cite xref">QUIC-CVN</a>]</span>) to
 discover supported versions and coordinate the switch.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
