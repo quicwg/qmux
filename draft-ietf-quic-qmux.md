@@ -155,10 +155,18 @@ version 1, with the exception to the specific changes made to the STREAM frames,
 as detailed in {{stream-frames}}.
 
 Use of other frames defined in QUIC version 1 is prohibited for various reasons.
-ACK frames are not used because the underlying transport guarantees delivery.
+
 Frames related to the cryptographic handshake are not used because an underlying
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.
+
+QMux relies on the underlying transport for reliable delivery and therefore does
+not use ACK frames. QMux stacks do not track delivery or retransmit lost data or
+frames. For the stream state machinery defined in {{Section 3 of QUIC}},
+references to acknowledgment are interpreted as though acknowledgments occurs as
+soon as data is passed to the underlying transport. As in QUIC version 1,
+applications cannot assume that the peer application has consumed data based
+solely on transport events.
 
 The full list of prohibited frames is:
 
@@ -348,6 +356,11 @@ close the connection with an error of type FRAME_ENCODING_ERROR.
 
 As is with QUIC version 1, a connection can be closed either by a
 CONNECTION_CLOSE frame or by an idle timeout.
+
+Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
+Endpoints reset the idle timer when sending or receiving QMux frames. When no
+other traffic is available, QX_PING frames can be used to elicit a peer
+response and keep the connection active.
 
 Unlike QUIC version 1, there is no draining period; once an endpoint sends or
 receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
