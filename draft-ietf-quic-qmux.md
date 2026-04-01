@@ -21,6 +21,10 @@ author:
     organization: Apple
     email: ekinnear@apple.com
 
+informative:
+  QUIC-TLS: RFC9001
+
+
 --- abstract
 
 This document specifies QMux version 1. QMux version 1 provides, over
@@ -118,17 +122,27 @@ Congestion control:
   Implementations of QMux simply write outgoing frames to the transport when
   that transport permits.
 
-Confidentially and Integrity:
+Authentication, confidentiality, and integrity protection:
 
 : Unless used upon endpoints between which tampering or monitoring is a
-  non-concern, the transport provides confidentially and integrity protection.
+  non-concern, the transport provides peer authentication, confidentially, and
+  integrity protection.
 
-TLS over TCP provides all these capabilities.
+Application Protocol Negotiation:
 
-UNIX sockets are an example that provides only the first two. Congestion control
-is not employed, as UNIX sockets do not face a shared bottleneck.
-Confidentiality and integrity protection are deemed unnecessary in environments
-where the operating system is trusted.
+: To avoid cross-protocol confusion, the underlying transport provides a
+  mechanism for endpoints to agree on the protocols in use. Without such a
+  mechanism, QMux and application protocols built on top of QMux can only be
+  used between endpoints that have out-of-band agreement on those protocols.
+
+TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
+(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities.
+
+UNIX sockets are an example that provide in-order and guaranteed delivery only.
+Congestion control is not employed, as UNIX sockets do not face a shared
+bottleneck. Confidentiality and integrity protection are deemed unnecessary in
+environments where the operating system is trusted. Agreement on the application
+protocol can be achieved by using different listening sockets.
 
 
 ## QMux Records {#records}
@@ -423,13 +437,49 @@ resources allocated for the Service are freed and the underlying transport is
 closed immediately.
 
 
-# Using 0-RTT
+# Using TLS
 
-TLS 1.3 introduced the concept of early data (also knows as 0-RTT data).
+When QMux is used over TLS, TLS provides capabilities in addition to
+confidentiality and integrity protection.
 
-When using QMux on top of TLS that supports early data, clients MAY use early
-data when resuming a connection, by reusing certain Transport Parameters as
-defined in {{Section 7.4.1 of QUIC}}.
+
+## Protocol Negotiation {#negotiation}
+
+As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
+over QMux over TLS, endpoints MUST use ALPN {{ALPN}} to agree on an application
+protocol, unless another mechanism is used for agreeing on an application
+protocol.
+
+ALPN protocol identifiers identify the application protocol in use. Application
+protocols that use QMux over TLS MUST designate their ALPN identifier and
+specify that they use QMux version 1. The identifier for a mapping to QMux MUST
+be different from the mapping of the same protocol to QUIC,
+to retain compatibility with Service Binding and Parameter Specification
+via the DNS {{?SVCB=RFC9460}}.
+
+When using ALPN, endpoints MUST abort the TLS handshake with a
+no_application_protocol TLS alert ({{Section 3.2 of ALPN}}) if an application
+protocol is not negotiated. While ALPN only requires that servers use this
+alert, QMux clients MUST also abort the handshake when ALPN negotiation fails.
+
+QMux is not itself an application protocol and does not have an ALPN identifier.
+
+TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
+format might change. Therefore, when testing interoperability of application
+protocols using a draft version of QMux, applications should specify, for each
+ALPN identifier they define, which draft version of QMux is used. As an example,
+an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP and QMux,
+identifying the use of a specific QMux draft version in its specification.
+the use of QMux draft-05.
+
+
+## Using 0-RTT
+
+TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
+
+When using QMux over TLS that supports early data, clients MAY use early data
+when resuming a connection, by reusing certain Transport Parameters as defined
+in {{Section 7.4.1 of QUIC}}.
 
 Similarly, when accepting early data, servers MUST send transport parameters
 that comply with the restrictions in {{Section 7.4.1 of QUIC}}. This preserves
@@ -488,11 +538,11 @@ version negotiation and upgrade.
 When a new QUIC version that provides a different interface to applications is
 specified, application protocols developed for that version might be assigned a
 new identifier for the TLS Application-Layer Protocol Negotiation (ALPN)
-extension {{?ALPN=RFC7301}}.
+extension {{ALPN}}.
 
 Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
-both the application protocol and the underlying QMux version.
+both the application protocol and the underlying QMux version ({{negotiation}}).
 
 When TLS is not the underlying transport, endpoints can use the first 8 bytes
 exchanged on the transport (i.e., the type field of the
