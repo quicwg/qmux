@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 24 September 2026                                    Cloudflare
+Expires: 3 October 2026                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           23 March 2026
+                                                            1 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2026.
+   This Internet-Draft will expire on 3 October 2026.
 
 Copyright Notice
 
