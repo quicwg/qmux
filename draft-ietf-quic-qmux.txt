@@ -70,15 +70,14 @@ Table of Contents
    2.  Conventions and Definitions
    3.  The Protocol
      3.1.  Properties of Underlying Transport
+     3.2.  QMux Records
    4.  QUIC Frames
-     4.1.  STREAM Frames
-       4.1.1.  STREAM Frames without the Length Field
-       4.1.2.  Ordering of STREAM frames
+     4.1.  Ordering of STREAM Frames
      4.2.  QX_TRANSPORT_PARAMETERS Frames
      4.3.  QX_PING Frames
    5.  Transport Parameters
      5.1.  Permitted and Forbidden Transport Parameters
-     5.2.  max_frame_size Transport Parameter
+     5.2.  max_record_size Transport Parameter
    6.  Closing the Connection
    7.  Using 0-RTT
    8.  Extensions
@@ -154,10 +153,10 @@ Table of Contents
    byte-oriented stream that is ordered and reliable; for details, see
    Section 3.1.
 
-   QUIC frames are sent directly on top of the transport.
-
-   The frames are not encrypted.  It is the task of the transport (e.g.,
-   TLS) to provide confidentially and integrity.
+   QMux transfers one or more QUIC frames within a QMux record; see
+   Section 3.2.  Neither QUIC frames nor QMux records are encrypted in
+   this protocol; it is the task of the transport (e.g., TLS) to provide
+   confidentiality and integrity.
 
    QUIC packet headers are not used.
 
@@ -194,6 +193,45 @@ Table of Contents
    shared bottleneck.  Confidentiality and integrity protection are
    deemed unnecessary in environments where the operating system is
    trusted.
+
+3.2.  QMux Records
+
+   QMux Records are formatted as shown in Figure 1.
+
+   QMux Record {
+     Size (i),
+     Frames (..),
+   }
+
+                        Figure 1: QMux Record Format
+
+   QMux Records contain the following fields:
+
+   Size:  A variable-length integer specifying the length in bytes of
+      the Frames field.  Note that this length does not include the Size
+      field itself.
+
+   Frames:  A byte sequence that contains one or more QUIC frames.
+
+   Each QMux Record is self-delimiting.  On a byte stream transport,
+   endpoints parse QMux Records by first parsing Size and then reading
+   exactly that many bytes as Frames.  The bytes in Frames are
+   interpreted as a contiguous series of QUIC frames encoded using QUIC
+   version 1 framing.
+
+   As with QUIC packet payloads (Section 12.4 of [QUIC]), frames are
+   complete units: a frame MUST fit entirely within a single QMux Record
+   and MUST NOT span multiple QMux Records.
+
+   Senders can choose record boundaries freely, subject to the
+   max_record_size Transport Parameter (Section 5.2).  Receivers process
+   frames within each record, using the record boundary as the payload
+   boundary for frames that omit an explicit length.
+
+   If the end of the Frames field is not aligned to a frame boundary
+   (that is, if the final frame in the record is truncated), the
+   receiver MUST close the connection with an error of type
+   FRAME_ENCODING_ERROR.
 
 4.  QUIC Frames
 
@@ -269,40 +307,26 @@ Table of Contents
    one it MUST close the connection with an error of type
    FRAME_ENCODING_ERROR.
 
-4.1.  STREAM Frames
+4.1.  Ordering of STREAM Frames
 
-   While the frame format remains unchanged, there are two differences
-   in the handling of STREAM frames between QUIC version 1 and QMux.
-
-4.1.1.  STREAM Frames without the Length Field
-
-   In QMux, when a STREAM frame that omits the Length field is used, the
-   size of that STREAM frame is determined by the maximum frame size, as
-   regulated by the max_frame_size Transport Parameter (Section 5.2).
-
-   This behavior contrasts with that of QUIC version 1, where the
-   absence of the Length field implies that the STREAM frame extends to
-   the end of the QUIC packet payload.
-
-   This variation arises due to the characteristics of the underlying
-   transports of QMux, which may not have, or provide visibility into,
-   the packet boundaries.
-
-4.1.2.  Ordering of STREAM frames
-
-   For each stream being sent, senders MUST send stream payload in
+   In QUIC version 1, the order in which STREAM frames are sent or
+   received is not guaranteed, because packets can be lost and frames
+   can be retransmitted in different packets.  In contrast, QMux, which
+   runs over an ordered and reliable byte stream transport, requires
+   STREAM frames for each QUIC stream to be sent in order: i.e., for
+   each QUIC stream being sent, senders MUST send the stream payload in
    order.
+
+   This change eliminates the need for implementations to buffer and
+   reassemble the stream payload.  As a result, the payload being
+   received can be directly passed to the application as it is read from
+   the transport.  This efficiency is due to the underlying transport's
+   guarantee of in-order delivery.
 
    When receiving a STREAM frame that carries a payload not immediately
    following the payload of the previous STREAM frame for the same
-   Stream ID, receivers MUST close connection with an error of type
+   Stream ID, receivers MUST close the connection with an error of type
    PROTOCOL_VIOLATION_ERROR.
-
-   This change from QUIC version 1 eliminates the need for
-   implementations to buffer and reassemble the stream payload.  As a
-   result, the payload being received can be directly passed to the
-   application as it is read from the transport.  This efficiency is due
-   to the underlying transport's guarantee of in-order delivery.
 
    These changes do not impact the senders' capability to interleave
    STREAM frames from multiple streams.
@@ -311,7 +335,7 @@ Table of Contents
 
    In QMux, Transport Parameters are exchanged as frames.
 
-   QX_TRANSPORT_PARAMETERS frames are formatted as shown in Figure 1.
+   QX_TRANSPORT_PARAMETERS frames are formatted as shown in Figure 2.
 
    QX_TRANSPORT_PARAMETERS Frame {
      Type (i) = 0x3f5153300d0a0d0a,
@@ -319,7 +343,7 @@ Table of Contents
      Transport Parameters (..),
    }
 
-               Figure 1: QX_TRANSPORT_PARAMETERS Frame Format
+               Figure 2: QX_TRANSPORT_PARAMETERS Frame Format
 
    QX_TRANSPORT_PARAMETERS frames contain the following fields:
 
@@ -349,14 +373,14 @@ Table of Contents
    In QMux, QX_PING frames allow endpoints to test peer reachability
    above the underlying transport.
 
-   QX_PING frames are formatted as shown in Figure 2.
+   QX_PING frames are formatted as shown in Figure 3.
 
    QX_PING Frame {
      Type (i) = 0xTBD..0xTBD+1,
      Sequence Number (i),
    }
 
-                       Figure 2: QX_PING Frame Format
+                       Figure 3: QX_PING Frame Format
 
    Type 0xTBD is used for sending a ping (i.e., request the peer to
    respond).  Type 0xTBD+1 is used in response.
@@ -416,25 +440,28 @@ Table of Contents
    receivers MUST ignore them unless they are specified to be usable on
    QMux.
 
-5.2.  max_frame_size Transport Parameter
+5.2.  max_record_size Transport Parameter
 
-   The max_frame_size Transport Parameter (0xTBD) is a variable-length
-   integer specifying the maximum size of the QUIC frame that the peer
-   can send, in the unit of bytes.
+   The max_record_size Transport Parameter (0xTBD) is a variable-length
+   integer specifying the maximum value of the Size field of a QMux
+   Record that the peer can send, in the unit of bytes.
 
-   The initial value of the max_frame_size Transport Parameter is 16384.
+   The initial value of the max_record_size Transport Parameter is
+   16382.  This value allows a sender to construct a 16KB QMux Record by
+   using a 2-byte Size field and a 16382-byte Frames field, aligning
+   with the default capacity of a full-sized TLS record.
 
-   By sending the Transport Parameter, the maximum frame size can only
+   By sending the Transport Parameter, the maximum record size can only
    be increased.  When receiving a value below the initial value,
    receivers MUST close the connection with an error of type
    TRANSPORT_PARAMETER_ERROR.
 
-   Endpoints MUST NOT send QUIC frames that exceed the maximum declared
-   by the peer.
+   Endpoints MUST NOT send QMux Records with a Frames field that exceeds
+   the maximum declared by the peer.
 
-   When receiving QUIC frames that exceed the declared maximum,
-   receivers MUST close the connection with an error of type
-   FRAME_ENCODING_ERROR.
+   When receiving a QMux Record with a Frames field that exceeds the
+   declared maximum, receivers MUST close the connection with an error
+   of type FRAME_ENCODING_ERROR.
 
 6.  Closing the Connection
 
@@ -479,15 +506,9 @@ Table of Contents
 8.1.  Unreliable Datagram Extension
 
    The use of the Unreliable Datagram Extension [QUIC_DATAGRAM] is
-   permitted, with one modification:
-
-   Similar to STREAM frames, when employing DATAGRAM frames of type 0x30
-   (i.e., DATAGRAM frames without the Length field), their size is
-   determined by the max_frame_size Transport Parameter (Section 5.2).
-
-   Apart from this, the encoding and semantics of the Unreliable
-   Datagram Extension remain unchanged.  The use of the extension is
-   negotiated via the Transport Parameters.
+   permitted.  The encoding and semantics of the Unreliable Datagram
+   Extension remain unchanged, and the use of the extension is
+   negotiated via Transport Parameters.
 
    As discussed in Section 5 of [QUIC_DATAGRAM], senders can drop
    DATAGRAM frames if the transport is blocked by flow or congestion
