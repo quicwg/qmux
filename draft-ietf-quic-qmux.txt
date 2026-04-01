@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 17 September 2026                                    Cloudflare
+Expires: 3 October 2026                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           16 March 2026
+                                                            1 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 September 2026.
+   This Internet-Draft will expire on 3 October 2026.
 
 Copyright Notice
 
@@ -229,11 +229,21 @@ Table of Contents
    Section 4.1.
 
    Use of other frames defined in QUIC version 1 is prohibited for
-   various reasons.  ACK frames are not used because the underlying
-   transport guarantees delivery.  Frames related to the cryptographic
-   handshake are not used because an underlying security layer can
-   provide equivalent features.  Use of frames that communicate
-   Connection IDs and those related to path migration is forbidden.
+   various reasons.
+
+   Frames related to the cryptographic handshake are not used because an
+   underlying security layer can provide equivalent features.  Use of
+   frames that communicate Connection IDs and those related to path
+   migration is forbidden.
+
+   QMux relies on the underlying transport for reliable delivery and
+   therefore does not use ACK frames.  QMux stacks do not track delivery
+   or retransmit lost data or frames.  For the stream state machinery
+   defined in Section 3 of [QUIC], references to acknowledgment are
+   interpreted as though acknowledgments occurs as soon as data is
+   passed to the underlying transport.  As in QUIC version 1,
+   applications cannot assume that the peer application has consumed
+   data based solely on transport events.
 
    The full list of prohibited frames is:
 
@@ -430,6 +440,11 @@ Table of Contents
 
    As is with QUIC version 1, a connection can be closed either by a
    CONNECTION_CLOSE frame or by an idle timeout.
+
+   Unlike QUIC version 1, idle timeout handling does not rely on ACK
+   frames.  Endpoints reset the idle timer when sending or receiving
+   QMux frames.  When no other traffic is available, QX_PING frames can
+   be used to elicit a peer response and keep the connection active.
 
    Unlike QUIC version 1, there is no draining period; once an endpoint
    sends or receives the CONNECTION_CLOSE frame or reaches the idle
@@ -636,7 +651,7 @@ Table of Contents
 
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
-              Vasiliev, V., and G. Xie, "WebTransport over HTTP/2", Work
+              Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
               2 March 2026, <https://datatracker.ietf.org/doc/html/
               draft-ietf-webtrans-http2-14>.
