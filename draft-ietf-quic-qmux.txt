@@ -80,7 +80,9 @@ Table of Contents
      5.2.  max_record_size Transport Parameter
    6.  Forward Progress and Flow Control
    7.  Closing the Connection
-   8.  Using 0-RTT
+   8.  Using TLS
+     8.1.  Protocol Negotiation
+     8.2.  Using 0-RTT
    9.  Extensions
      9.1.  Unreliable Datagram Extension
    10. Version Agility
@@ -183,17 +185,27 @@ Table of Contents
       congestion controlled.  Implementations of QMux simply write
       outgoing frames to the transport when that transport permits.
 
-   Confidentially and Integrity:  Unless used upon endpoints between
-      which tampering or monitoring is a non-concern, the transport
-      provides confidentially and integrity protection.
+   Authentication, confidentiality, and integrity protection:  Unless
+      used upon endpoints between which tampering or monitoring is a
+      non-concern, the transport provides peer authentication,
+      confidentially, and integrity protection.
 
-   TLS over TCP provides all these capabilities.
+   Application Protocol Negotiation:  To avoid cross-protocol confusion,
+      the underlying transport provides a mechanism for endpoints to
+      agree on the protocols in use.  Without such a mechanism, QMux and
+      application protocols built on top of QMux can only be used
+      between endpoints that have out-of-band agreement on those
+      protocols.
 
-   UNIX sockets are an example that provides only the first two.
-   Congestion control is not employed, as UNIX sockets do not face a
-   shared bottleneck.  Confidentiality and integrity protection are
-   deemed unnecessary in environments where the operating system is
-   trusted.
+   TLS over TCP, combined with the Application-Layer Protocol
+   Negotiation extension (ALPN) [ALPN], provides all these capabilities.
+
+   UNIX sockets are an example that provide in-order and guaranteed
+   delivery only.  Congestion control is not employed, as UNIX sockets
+   do not face a shared bottleneck.  Confidentiality and integrity
+   protection are deemed unnecessary in environments where the operating
+   system is trusted.  Agreement on the application protocol can be
+   achieved by using different listening sockets.
 
 3.2.  QMux Records
 
@@ -511,14 +523,51 @@ Table of Contents
    timeout, all the resources allocated for the Service are freed and
    the underlying transport is closed immediately.
 
-8.  Using 0-RTT
+8.  Using TLS
 
-   TLS 1.3 introduced the concept of early data (also knows as 0-RTT
+   When QMux is used over TLS, TLS provides capabilities in addition to
+   confidentiality and integrity protection.
+
+8.1.  Protocol Negotiation
+
+   As in QUIC Section 8.1 of [QUIC-TLS], when running an application
+   protocol over QMux over TLS, endpoints MUST use ALPN [ALPN] to agree
+   on an application protocol, unless another mechanism is used for
+   agreeing on an application protocol.
+
+   ALPN protocol identifiers identify the application protocol in use.
+   Application protocols that use QMux over TLS MUST designate their
+   ALPN identifier and specify that they use QMux version 1.  The
+   identifier for a mapping to QMux MUST be different from the mapping
+   of the same protocol to QUIC, to retain compatibility with Service
+   Binding and Parameter Specification via the DNS [SVCB].
+
+   When using ALPN, endpoints MUST abort the TLS handshake with a
+   no_application_protocol TLS alert (Section 3.2 of [ALPN]) if an
+   application protocol is not negotiated.  While ALPN only requires
+   that servers use this alert, QMux clients MUST also abort the
+   handshake when ALPN negotiation fails.
+
+   QMux is not itself an application protocol and does not have an ALPN
+   identifier.
+
+   TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its
+   wire format might change.  Therefore, when testing interoperability
+   of application protocols using a draft version of QMux, applications
+   should specify, for each ALPN identifier they define, which draft
+   version of QMux is used.  As an example, an ALPN identifier "myapp-
+   12qx" could identify version 12 of "myapp" over TCP and QMux,
+   identifying the use of a specific QMux draft version in its
+   specification. the use of QMux draft-05.
+
+8.2.  Using 0-RTT
+
+   TLS 1.3 introduced the concept of early data (also known as 0-RTT
    data).
 
-   When using QMux on top of TLS that supports early data, clients MAY
-   use early data when resuming a connection, by reusing certain
-   Transport Parameters as defined in Section 7.4.1 of [QUIC].
+   When using QMux over TLS that supports early data, clients MAY use
+   early data when resuming a connection, by reusing certain Transport
+   Parameters as defined in Section 7.4.1 of [QUIC].
 
    Similarly, when accepting early data, servers MUST send transport
    parameters that comply with the restrictions in Section 7.4.1 of
@@ -582,7 +631,7 @@ Table of Contents
    Similarly, when TLS is the underlying transport, application
    protocols built on top of the QMux counterparts of such QUIC versions
    can rely on ALPN to negotiate both the application protocol and the
-   underlying QMux version.
+   underlying QMux version (Section 8.1).
 
    When TLS is not the underlying transport, endpoints can use the first
    8 bytes exchanged on the transport (i.e., the type field of the
@@ -636,6 +685,11 @@ Table of Contents
 
 14.1.  Normative References
 
+   [ALPN]     Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
+
    [QUIC]     Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
@@ -661,11 +715,6 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc8446>.
 
 14.2.  Informative References
-
-   [ALPN]     Friedl, S., Popov, A., Langley, A., and E. Stephan,
-              "Transport Layer Security (TLS) Application-Layer Protocol
-              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
-              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
 
    [h2-stream-limits]
               Thomson, M. and L. Pardue, "Using HTTP/3 Stream Limits in
@@ -698,6 +747,15 @@ Table of Contents
               Thomson, M., "Version-Independent Properties of QUIC",
               RFC 8999, DOI 10.17487/RFC8999, May 2021,
               <https://www.rfc-editor.org/rfc/rfc8999>.
+
+   [QUIC-TLS] Thomson, M., Ed. and S. Turner, Ed., "Using TLS to Secure
+              QUIC", RFC 9001, DOI 10.17487/RFC9001, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9001>.
+
+   [SVCB]     Schwartz, B., Bishop, M., and E. Nygren, "Service Binding
+              and Parameter Specification via the DNS (SVCB and HTTPS
+              Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
+              November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
 
    [TCP]      Eddy, W., Ed., "Transmission Control Protocol (TCP)",
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
