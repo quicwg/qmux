@@ -1,4 +1,4 @@
 [submodule "codepoints/quic-pick"]
 	path = codepoints/quic-pick
-	url = https://github.com/LPardue/quic-pick.git
-	branch = extract-module
+	url = https://github.com/martinthomson/quic-pick.git
+	branch = main
