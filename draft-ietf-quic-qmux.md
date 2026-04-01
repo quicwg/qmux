@@ -89,10 +89,9 @@ QUIC}}.
 QMux can be used on any transport that provides a bi-directional, byte-oriented
 stream that is ordered and reliable; for details, see {{transport-properties}}.
 
-QUIC frames are sent directly on top of the transport.
-
-The frames are not encrypted. It is the task of the transport (e.g., TLS) to
-provide confidentially and integrity.
+QMux transfers one or more QUIC frames within a QMux record; see {{records}}.
+Neither QUIC frames nor QMux records are encrypted in this protocol; it is the
+task of the transport (e.g., TLS) to provide confidentiality and integrity.
 
 QUIC packet headers are not used.
 
@@ -146,6 +145,47 @@ environments where the operating system is trusted. Agreement on the application
 protocol can be achieved by using different listening sockets.
 
 
+## QMux Records {#records}
+
+QMux Records are formatted as shown in {{fig-qmux-record}}.
+
+~~~
+QMux Record {
+  Size (i),
+  Frames (..),
+}
+~~~
+{: #fig-qmux-record title="QMux Record Format"}
+
+QMux Records contain the following fields:
+
+Size:
+
+: A variable-length integer specifying the length in bytes of the Frames field. Note that this length does not include the Size field itself.
+
+Frames:
+
+: A byte sequence that contains one or more QUIC frames.
+
+Each QMux Record is self-delimiting. On a byte stream transport, endpoints
+parse QMux Records by first parsing Size and then reading exactly that many
+bytes as Frames. The bytes in Frames are interpreted as a contiguous series of
+QUIC frames encoded using QUIC version 1 framing.
+
+As with QUIC packet payloads ({{Section 12.4 of QUIC}}), frames are complete
+units: a frame MUST fit entirely within a single QMux Record and MUST NOT span
+multiple QMux Records.
+
+Senders can choose record boundaries freely, subject to the `max_record_size`
+Transport Parameter ({{max_record_size}}). Receivers process frames within each
+record, using the record boundary as the payload boundary for frames that omit
+an explicit length.
+
+If the end of the Frames field is not aligned to a frame boundary (that is, if
+the final frame in the record is truncated), the receiver MUST close the
+connection with an error of type FRAME_ENCODING_ERROR.
+
+
 # QUIC Frames
 
 In QMux, the following QUIC frames can be used, as if they were sent or received
@@ -169,10 +209,18 @@ version 1, with the exception to the specific changes made to the STREAM frames,
 as detailed in {{stream-frames}}.
 
 Use of other frames defined in QUIC version 1 is prohibited for various reasons.
-ACK frames are not used because the underlying transport guarantees delivery.
+
 Frames related to the cryptographic handshake are not used because an underlying
 security layer can provide equivalent features. Use of frames that communicate
 Connection IDs and those related to path migration is forbidden.
+
+QMux relies on the underlying transport for reliable delivery and therefore does
+not use ACK frames. QMux stacks do not track delivery or retransmit lost data or
+frames. For the stream state machinery defined in {{Section 3 of QUIC}},
+references to acknowledgment are interpreted as though acknowledgments occurs as
+soon as data is passed to the underlying transport. As in QUIC version 1,
+applications cannot assume that the peer application has consumed data based
+solely on transport events.
 
 The full list of prohibited frames is:
 
@@ -190,39 +238,23 @@ Endpoints MUST NOT send prohibited frames. If an endpoint receives one it MUST
 close the connection with an error of type FRAME_ENCODING_ERROR.
 
 
-## STREAM Frames {#stream-frames}
+## Ordering of STREAM Frames {#stream-frames}
 
-While the frame format remains unchanged, there are two differences in the
-handling of STREAM frames between QUIC version 1 and QMux.
+In QUIC version 1, the order in which STREAM frames are sent or received is not
+guaranteed, because packets can be lost and frames can be retransmitted in
+different packets. In contrast, QMux, which runs over an ordered and reliable
+byte stream transport, requires STREAM frames for each QUIC stream to be sent
+in order: i.e., for each QUIC stream being sent, senders MUST send the stream
+payload in order.
 
-
-### STREAM Frames without the Length Field
-
-In QMux, when a STREAM frame that omits the Length field is used, the size of
-that STREAM frame is determined by the maximum frame size, as regulated by the
-`max_frame_size` Transport Parameter ({{max_frame_size}}).
-
-This behavior contrasts with that of QUIC version 1, where the absence of the
-Length field implies that the STREAM frame extends to the end of the QUIC packet
-payload.
-
-This variation arises due to the characteristics of the underlying transports of
-QMux, which may not have, or provide visibility into, the packet boundaries.
-
-
-### Ordering of STREAM frames
-
-For each stream being sent, senders MUST send stream payload in order.
+This change eliminates the need for implementations to buffer and reassemble
+the stream payload. As a result, the payload being received can be directly
+passed to the application as it is read from the transport. This efficiency is
+due to the underlying transport's guarantee of in-order delivery.
 
 When receiving a STREAM frame that carries a payload not immediately following
 the payload of the previous STREAM frame for the same Stream ID, receivers MUST
-close connection with an error of type PROTOCOL_VIOLATION_ERROR.
-
-This change from QUIC version 1 eliminates the need for implementations to
-buffer and reassemble the stream payload. As a result, the payload being
-received can be directly passed to the application as it is read from the
-transport. This efficiency is due to the underlying transport's guarantee of
-in-order delivery.
+close the connection with an error of type PROTOCOL_VIOLATION_ERROR.
 
 These changes do not impact the senders' capability to interleave STREAM frames
 from multiple streams.
@@ -257,12 +289,23 @@ Transport Parameters:
   {{Section 18 of QUIC}}.
 
 
-The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints.
-Endpoints MUST send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying
-transport becomes available. Note neither endpoint needs to wait for the
-peer's Transport Parameters before sending its own, as Transport Parameters are
-a unilateral declaration of an endpoint's capabilities
-({{Section 7.4 of QUIC}}).
+The QX_TRANSPORT_PARAMETERS frame is the first frame sent by endpoints. To allow
+peers to open streams and start sending data as early as possible, endpoints
+MUST send the QX_TRANSPORT_PARAMETERS frame as soon as the underlying transport
+becomes available for sending. Neither endpoint needs to wait for the peer's
+transport parameters before sending its own, as transport parameters are a
+unilateral declaration of an endpoint's capabilities ({{Section 7.4 of QUIC}}).
+
+Except when sending 0-RTT data using remembered transport parameters as
+described in {{Section 7.4.1 of QUIC}}, endpoints MUST NOT send frames whose use
+depends on peer transport parameters until the peer's QX_TRANSPORT_PARAMETERS
+frame has been received and processed. This can delay use of peer-advertised
+flow control credit and can therefore block sending stream data before peer
+transport parameters arrive. When QMux runs over TLS 1.3, this does not
+necessarily add a full round trip for clients on a full handshake. Servers can
+send the QX_TRANSPORT_PARAMETERS frame immediately after the server's Finished
+message, and clients can receive and process the transport parameters as soon as
+they obtain the keys needed to process application data.
 
 If the first frame being received by an endpoint is not a
 QX_TRANSPORT_PARAMETERS frame, the endpoint MUST close the connection with an
@@ -339,29 +382,54 @@ When receiving Transport Parameters not defined in QUIC version 1, receivers
 MUST ignore them unless they are specified to be usable on QMux.
 
 
-## max_frame_size Transport Parameter {#max_frame_size}
+## max_record_size Transport Parameter {#max_record_size}
 
-The `max_frame_size` Transport Parameter (0xTBD) is a variable-length integer
-specifying the maximum size of the QUIC frame that the peer can send, in the
-unit of bytes.
+The `max_record_size` Transport Parameter (0xTBD) is a variable-length integer
+specifying the maximum value of the Size field of a QMux Record that the peer
+can send, in the unit of bytes.
 
-The initial value of the `max_frame_size` Transport Parameter is 16384.
+The initial value of the `max_record_size` Transport Parameter is 16382.
+This value allows a sender to construct a 16KB QMux Record by using a 2-byte
+Size field and a 16382-byte Frames field, aligning with the default capacity of
+a full-sized TLS record.
 
-By sending the Transport Parameter, the maximum frame size can only be
+By sending the Transport Parameter, the maximum record size can only be
 increased. When receiving a value below the initial value, receivers MUST close
 the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
-Endpoints MUST NOT send QUIC frames that exceed the maximum declared by the
-peer.
+Endpoints MUST NOT send QMux Records with a Frames field that exceeds the
+maximum declared by the peer.
 
-When receiving QUIC frames that exceed the declared maximum, receivers MUST
-close the connection with an error of type FRAME_ENCODING_ERROR.
+When receiving a QMux Record with a Frames field that exceeds the declared
+maximum, receivers MUST close the connection with an error of type
+FRAME_ENCODING_ERROR.
+
+
+# Forward Progress and Flow Control {#forward-progress-flow-control}
+
+To avoid deadlock due to flow control in the underlying transport, endpoints
+MUST continue reading from the underlying transport even when delivery of STREAM
+data to the application is temporarily blocked.
+
+Endpoints MUST NOT couple reads from the underlying transport to application
+reads on any single QUIC stream, as doing so can prevent processing of frames
+required for connection progress.
+
+Continuing to read does not imply unbounded buffering of STREAM data, as the
+amount of stream data a peer can send is limited by flow control
+({{Section 4 of QUIC}}). For DATAGRAM frames, endpoints MAY drop received
+datagrams when they cannot be promptly delivered to the application.
 
 
 # Closing the Connection
 
 As is with QUIC version 1, a connection can be closed either by a
 CONNECTION_CLOSE frame or by an idle timeout.
+
+Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
+Endpoints reset the idle timer when sending or receiving QMux frames. When no
+other traffic is available, QX_PING frames can be used to elicit a peer
+response and keep the connection active.
 
 Unlike QUIC version 1, there is no draining period; once an endpoint sends or
 receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
@@ -413,8 +481,10 @@ When using QMux over TLS that supports early data, clients MAY use early data
 when resuming a connection, by reusing certain Transport Parameters as defined
 in {{Section 7.4.1 of QUIC}}.
 
-Similarly, when accepting early data, the servers MUST send Transport Parameters
-that comply with the restrictions defined in {{Section 7.4.1 of QUIC}}.
+Similarly, when accepting early data, servers MUST send transport parameters
+that comply with the restrictions in {{Section 7.4.1 of QUIC}}. This preserves
+QUIC's 0-RTT compatibility model and avoids requiring an additional round trip
+to learn peer transport parameters on resumed connections.
 
 
 # Extensions
@@ -431,14 +501,8 @@ This specification defines the mapping of the Unreliable Datagram Extension.
 ## Unreliable Datagram Extension
 
 The use of the Unreliable Datagram Extension {{!QUIC_DATAGRAM=RFC9221}} is
-permitted, with one modification:
-
-Similar to STREAM frames, when employing DATAGRAM frames of type 0x30 (i.e.,
-DATAGRAM frames without the Length field), their size is determined by the
-`max_frame_size` Transport Parameter ({{max_frame_size}}).
-
-Apart from this, the encoding and semantics of the Unreliable Datagram Extension
-remain unchanged. The use of the extension is negotiated via the Transport
+permitted. The encoding and semantics of the Unreliable Datagram Extension
+remain unchanged, and the use of the extension is negotiated via Transport
 Parameters.
 
 As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
@@ -522,7 +586,9 @@ throughput.
 
 # Security Considerations
 
-TODO Security
+Failure to follow the forward-progress requirements in
+{{forward-progress-flow-control}} can lead to deadlock and can be exploited for
+resource-exhaustion attacks.
 
 
 # IANA Considerations
