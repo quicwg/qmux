@@ -356,7 +356,7 @@ has received.
 # Transport Parameters
 
 QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
-new Transport Parameter specific to QMux is defined.
+new transport parameter specific to QMux is defined.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
