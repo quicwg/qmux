@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Oku, et al.</td>
-<td class="center">Expires 3 October 2026</td>
+<td class="center">Expires 4 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-qmux-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-01" class="published">1 April 2026</time>
+<time datetime="2026-04-02" class="published">2 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-03">3 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-04">4 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1209,7 +1209,15 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-closing-the-connection" class="internal xref">Closing the Connection</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-using-0-rtt" class="internal xref">Using 0-RTT</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-using-tls" class="internal xref">Using TLS</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-protocol-negotiation" class="internal xref">Protocol Negotiation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-using-0-rtt" class="internal xref">Using 0-RTT</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-extensions" class="internal xref">Extensions</a></p>
@@ -1238,6 +1246,14 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-quic-frame-types" class="internal xref">QUIC Frame Types</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-quic-transport-parameters" class="internal xref">QUIC Transport Parameters</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
             <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-references" class="internal xref">References</a></p>
@@ -1352,18 +1368,29 @@ Implementations of QMux simply write outgoing frames to the transport when
 that transport permits.<a href="#section-3.1-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-2.7">Confidentially and Integrity:</dt>
+<dt id="section-3.1-2.7">Authentication, confidentiality, and integrity protection:</dt>
           <dd style="margin-left: 1.5em" id="section-3.1-2.8">
             <p id="section-3.1-2.8.1">Unless used upon endpoints between which tampering or monitoring is a
-non-concern, the transport provides confidentially and integrity protection.<a href="#section-3.1-2.8.1" class="pilcrow">¶</a></p>
+non-concern, the transport provides peer authentication, confidentially, and
+integrity protection.<a href="#section-3.1-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.1-2.9">Application Protocol Negotiation:</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-2.10">
+            <p id="section-3.1-2.10.1">To avoid cross-protocol confusion, the underlying transport provides a
+mechanism for endpoints to agree on the protocols in use. Without such a
+mechanism, QMux and application protocols built on top of QMux can only be
+used between endpoints that have out-of-band agreement on those protocols.<a href="#section-3.1-2.10.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.1-3">TLS over TCP provides all these capabilities.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">UNIX sockets are an example that provides only the first two. Congestion control
-is not employed, as UNIX sockets do not face a shared bottleneck.
-Confidentiality and integrity protection are deemed unnecessary in environments
-where the operating system is trusted.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
+(ALPN) <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>, provides all these capabilities.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">UNIX sockets are an example that provide in-order and guaranteed delivery only.
+Congestion control is not employed, as UNIX sockets do not face a shared
+bottleneck. Confidentiality and integrity protection are deemed unnecessary in
+environments where the operating system is trusted. Agreement on the application
+protocol can be achieved by using different listening sockets.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="records">
@@ -1603,7 +1630,7 @@ underlying transport.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
           <div class="alignLeft art-text artwork" id="section-4.3-3.1">
 <pre>
 QX_PING Frame {
-  Type (i) = 0xTBD..0xTBD+1,
+  Type (i) = 0x348c67529ef8c7bd..0x348c67529ef8c7be,
   Sequence Number (i),
 }
 </pre>
@@ -1612,8 +1639,8 @@ QX_PING Frame {
 <a href="#name-qx_ping-frame-format" class="selfRef">QX_PING Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.3-4">Type 0xTBD is used for sending a ping (i.e., request the peer to respond). Type
-0xTBD+1 is used in response.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">Type 0x348c67529ef8c7bd is used for sending a ping (i.e., request the peer to
+respond). Type 0x348c67529ef8c7be is used in response.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 <p id="section-4.3-5">QX_PING frames contain the following fields:<a href="#section-4.3-5" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.3-6">
           <dt id="section-4.3-6.1">Sequence Number:</dt>
@@ -1622,14 +1649,15 @@ QX_PING Frame {
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.3-7">When sending QX_PING frames of type 0xTBD, endpoints <span class="bcp14">MUST</span> send monotonically
-increasing values in the Sequence Number field, since that allows the endpoints
-to identify to which ping the peer has responded.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
-<p id="section-4.3-8">When sending QX_PING frames of type 0xTBD+1 in response, endpoints <span class="bcp14">MUST</span> echo the
-Sequence Number that they received.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
-<p id="section-4.3-9">When receiving multiple QX_PING frames of type 0xTBD before having the chance to
-respond, an endpoint <span class="bcp14">MAY</span> only respond with one QX_PING frame of type 0xTBD+1
-carrying the largest Sequence Number that the endpoint has received.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
+<p id="section-4.3-7">When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints <span class="bcp14">MUST</span> send
+monotonically increasing values in the Sequence Number field, since that allows
+the endpoints to identify to which ping the peer has responded.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+<p id="section-4.3-8">When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
+<span class="bcp14">MUST</span> echo the Sequence Number that they received.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
+<p id="section-4.3-9">When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd before having
+the chance to respond, an endpoint <span class="bcp14">MAY</span> only respond with one QX_PING frame of
+type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
+has received.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1640,7 +1668,7 @@ carrying the largest Sequence Number that the endpoint has received.<a href="#se
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-transport-parameters" class="section-name selfRef">Transport Parameters</a>
       </h2>
 <p id="section-5-1">QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
-new Transport Parameter specific to QMux is defined.<a href="#section-5-1" class="pilcrow">¶</a></p>
+new transport parameter specific to QMux is defined.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="permitted-tps">
 <section id="section-5.1">
         <h3 id="name-permitted-and-forbidden-tra">
@@ -1685,9 +1713,9 @@ they are specified to be compatible with QMux.<a href="#section-5.1-5" class="pi
         <h3 id="name-max_record_size-transport-p">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-max_record_size-transport-p" class="section-name selfRef">max_record_size Transport Parameter</a>
         </h3>
-<p id="section-5.2-1">The <code>max_record_size</code> transport parameter (0xTBD) is a variable-length integer
-specifying the maximum value of the Size field of a QMux Record that the peer
-can send, in the unit of bytes.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-1">The <code>max_record_size</code> transport parameter (0x0571c59429cd0845) is a
+variable-length integer specifying the maximum value of the Size field of a QMux
+Record that the peer can send, in the unit of bytes.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">The initial value of the <code>max_record_size</code> transport parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
 Size field and a 16382-byte Frames field, aligning with the default capacity of
@@ -1738,19 +1766,57 @@ resources allocated for the Service are freed and the underlying transport is
 closed immediately.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="using-0-rtt">
+<div id="using-tls">
 <section id="section-8">
-      <h2 id="name-using-0-rtt">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-using-0-rtt" class="section-name selfRef">Using 0-RTT</a>
+      <h2 id="name-using-tls">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-using-tls" class="section-name selfRef">Using TLS</a>
       </h2>
-<p id="section-8-1">TLS 1.3 introduced the concept of early data (also knows as 0-RTT data).<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">When using QMux on top of TLS that supports early data, clients <span class="bcp14">MAY</span> use early
-data when resuming a connection, by reusing certain transport parameters as
-defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">Similarly, when accepting early data, servers <span class="bcp14">MUST</span> send transport parameters
+<p id="section-8-1">When QMux is used over TLS, TLS provides capabilities in addition to
+confidentiality and integrity protection.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<div id="negotiation">
+<section id="section-8.1">
+        <h3 id="name-protocol-negotiation">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-protocol-negotiation" class="section-name selfRef">Protocol Negotiation</a>
+        </h3>
+<p id="section-8.1-1">As in QUIC <span><a href="https://rfc-editor.org/rfc/rfc9001#section-8.1" class="relref">Section 8.1</a> of [<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, when running an application protocol
+over QMux over TLS, endpoints <span class="bcp14">MUST</span> use ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span> to agree on an application
+protocol, unless another mechanism is used for agreeing on an application
+protocol.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">ALPN protocol identifiers identify the application protocol in use. Application
+protocols that use QMux over TLS <span class="bcp14">MUST</span> designate their ALPN identifier and
+specify that they use QMux version 1. The identifier for a mapping to QMux <span class="bcp14">MUST</span>
+be different from the mapping of the same protocol to QUIC,
+to retain compatibility with Service Binding and Parameter Specification
+via the DNS <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">When using ALPN, endpoints <span class="bcp14">MUST</span> abort the TLS handshake with a
+no_application_protocol TLS alert (<span><a href="https://rfc-editor.org/rfc/rfc7301#section-3.2" class="relref">Section 3.2</a> of [<a href="#ALPN" class="cite xref">ALPN</a>]</span>) if an application
+protocol is not negotiated. While ALPN only requires that servers use this
+alert, QMux clients <span class="bcp14">MUST</span> also abort the handshake when ALPN negotiation fails.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-4">QMux is not itself an application protocol and does not have an ALPN identifier.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1-5">TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
+format might change. Therefore, when testing interoperability of application
+protocols using a draft version of QMux, applications should specify, for each
+ALPN identifier they define, which draft version of QMux is used. As an example,
+an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP and QMux,
+identifying the use of a specific QMux draft version in its specification.
+the use of QMux draft-05.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="using-0-rtt">
+<section id="section-8.2">
+        <h3 id="name-using-0-rtt">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-using-0-rtt" class="section-name selfRef">Using 0-RTT</a>
+        </h3>
+<p id="section-8.2-1">TLS 1.3 introduced the concept of early data (also known as 0-RTT data).<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">When using QMux over TLS that supports early data, clients <span class="bcp14">MAY</span> use early data
+when resuming a connection, by reusing certain transport parameters as defined
+in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.2-3">Similarly, when accepting early data, servers <span class="bcp14">MUST</span> send transport parameters
 that comply with the restrictions in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>. This preserves
 QUIC's 0-RTT compatibility model and avoids requiring an additional round trip
-to learn peer transport parameters on resumed connections.<a href="#section-8-3" class="pilcrow">¶</a></p>
+to learn peer transport parameters on resumed connections.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="extensions">
@@ -1810,7 +1876,7 @@ new identifier for the TLS Application-Layer Protocol Negotiation (ALPN)
 extension <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <p id="section-10.1-2">Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
-both the application protocol and the underlying QMux version.<a href="#section-10.1-2" class="pilcrow">¶</a></p>
+both the application protocol and the underlying QMux version (<a href="#negotiation" class="auto internal xref">Section 8.1</a>).<a href="#section-10.1-2" class="pilcrow">¶</a></p>
 <p id="section-10.1-3">When TLS is not the underlying transport, endpoints can use the first 8 bytes
 exchanged on the transport (i.e., the type field of the
 QX_TRANSPORT_PARAMETERS frame in the encoded form) to identify whether QMux is
@@ -1870,7 +1936,84 @@ resource-exhaustion attacks.<a href="#section-12-1" class="pilcrow">¶</a></p>
       <h2 id="name-iana-considerations">
 <a href="#section-13" class="section-number selfRef">13. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-13-1">TODO<a href="#section-13-1" class="pilcrow">¶</a></p>
+<p id="section-13-1">This document defines new frame types and a transport parameter for use
+with QUIC. IANA is requested to register the following values in the
+registries under <a href="https://www.iana.org/assignments/quic">https://www.iana.org/assignments/quic</a>.<a href="#section-13-1" class="pilcrow">¶</a></p>
+<p id="section-13-2">The codepoints listed below, unless otherwise stated, were selected using the
+deterministic method described at <a href="https://martinthomson.github.io/quic-pick/">https://martinthomson.github.io/quic-pick/</a>,
+with seeds of the form <code>draft-ietf-quic-qmux-NN_&lt;fieldtype&gt;</code>. Upon publication
+as an RFC, IANA is requested to replace provisional codepoints with permanent
+assignments from the standards-action range.<a href="#section-13-2" class="pilcrow">¶</a></p>
+<div id="quic-frame-types">
+<section id="section-13.1">
+        <h3 id="name-quic-frame-types">
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-quic-frame-types" class="section-name selfRef">QUIC Frame Types</a>
+        </h3>
+<p id="section-13.1-1">The following entries should be added to the "QUIC Frame Types"
+registry.<a href="#section-13.1-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Frame Type Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Status</th>
+              <th class="text-left" rowspan="1" colspan="1">Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x3f5153300d0a0d0a</td>
+              <td class="text-left" rowspan="1" colspan="1">QX_TRANSPORT_PARAMETERS</td>
+              <td class="text-left" rowspan="1" colspan="1">provisional</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <a href="#fig-qx-transport-parameters" class="auto internal xref">Figure 2</a>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x348c67529ef8c7bd - 0x348c67529ef8c7be</td>
+              <td class="text-left" rowspan="1" colspan="1">QX_PING</td>
+              <td class="text-left" rowspan="1" colspan="1">provisional</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <a href="#fig-qx-ping" class="auto internal xref">Figure 3</a>
+</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-13.1-3">The value 0x3f5153300d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen deliberately
+to function as a protocol magic number see (<a href="#fig-qx-transport-parameters" class="auto internal xref">Figure 2</a>).<a href="#section-13.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="quic-transport-parameters">
+<section id="section-13.2">
+        <h3 id="name-quic-transport-parameters">
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-quic-transport-parameters" class="section-name selfRef">QUIC Transport Parameters</a>
+        </h3>
+<p id="section-13.2-1">The following entry should be added to the "QUIC Transport Parameters"
+registry.<a href="#section-13.2-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Parameter Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Status</th>
+              <th class="text-left" rowspan="1" colspan="1">Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x0571c59429cd0845</td>
+              <td class="text-left" rowspan="1" colspan="1">max_record_size</td>
+              <td class="text-left" rowspan="1" colspan="1">provisional</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <a href="#max_record_size" class="auto internal xref">Section 5.2</a>
+</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -1884,6 +2027,10 @@ resource-exhaustion attacks.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <a href="#section-14.1" class="section-number selfRef">14.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
+<dt id="ALPN">[ALPN]</dt>
+        <dd>
+<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="QUIC">[QUIC]</dt>
         <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
@@ -1913,10 +2060,6 @@ resource-exhaustion attacks.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <a href="#section-14.2" class="section-number selfRef">14.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
-<dt id="ALPN">[ALPN]</dt>
-        <dd>
-<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="h2-stream-limits">[h2-stream-limits]</dt>
         <dd>
 <span class="refAuthor">Thomson, M.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Using HTTP/3 Stream Limits in HTTP/2"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-thomson-httpbis-h2-stream-limits-00</span>, <time datetime="2023-11-06" class="refDate">6 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-thomson-httpbis-h2-stream-limits-00">https://datatracker.ietf.org/doc/html/draft-thomson-httpbis-h2-stream-limits-00</a>&gt;</span>. </dd>
@@ -1944,6 +2087,14 @@ resource-exhaustion attacks.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <dt id="QUIC-INVARIANTS">[QUIC-INVARIANTS]</dt>
         <dd>
 <span class="refAuthor">Thomson, M.</span>, <span class="refTitle">"Version-Independent Properties of QUIC"</span>, <span class="seriesInfo">RFC 8999</span>, <span class="seriesInfo">DOI 10.17487/RFC8999</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8999">https://www.rfc-editor.org/rfc/rfc8999</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="QUIC-TLS">[QUIC-TLS]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9001">https://www.rfc-editor.org/rfc/rfc9001</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SVCB">[SVCB]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refAuthor">Bishop, M.</span>, and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records)"</span>, <span class="seriesInfo">RFC 9460</span>, <span class="seriesInfo">DOI 10.17487/RFC9460</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9460">https://www.rfc-editor.org/rfc/rfc9460</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TCP">[TCP]</dt>
         <dd>
