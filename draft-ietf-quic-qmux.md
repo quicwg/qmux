@@ -95,7 +95,7 @@ task of the transport (e.g., TLS) to provide confidentiality and integrity.
 
 QUIC packet headers are not used.
 
-For exchanging the Transport Parameters, a new frame called
+For exchanging the transport parameters, a new frame called
 QX_TRANSPORT_PARAMETERS frame is defined.
 
 
@@ -177,7 +177,7 @@ units: a frame MUST fit entirely within a single QMux Record and MUST NOT span
 multiple QMux Records.
 
 Senders can choose record boundaries freely, subject to the `max_record_size`
-Transport Parameter ({{max_record_size}}). Receivers process frames within each
+transport parameter ({{max_record_size}}). Receivers process frames within each
 record, using the record boundary as the payload boundary for frames that omit
 an explicit length.
 
@@ -262,7 +262,7 @@ from multiple streams.
 
 ## QX_TRANSPORT_PARAMETERS Frames
 
-In QMux, Transport Parameters are exchanged as frames.
+In QMux, transport parameters are exchanged as frames.
 
 QX_TRANSPORT_PARAMETERS frames are formatted as shown in
 {{fig-qx-transport-parameters}}.
@@ -280,12 +280,12 @@ QX_TRANSPORT_PARAMETERS frames contain the following fields:
 
 Length:
 
-: A variable-length integer specifying the length of the Transport Parameters
+: A variable-length integer specifying the length of the transport parameters
   field in this QX_TRANSPORT_PARAMETERS frame.
 
 Transport Parameters:
 
-: The Transport Parameters. The encoding of the payload is as defined in
+: The transport parameters. The encoding of the payload is as defined in
   {{Section 18 of QUIC}}.
 
 
@@ -355,12 +355,12 @@ has received.
 
 # Transport Parameters
 
-QMux uses a subset of Transport Parameters defined in QUIC version 1. Also, one
-new Transport Parameter specific to QMux is defined.
+QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
+new transport parameter specific to QMux is defined.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
-In QMux, use of the following Transport Parameters is allowed.
+In QMux, use of the following transport parameters is allowed.
 
 * max_idle_timeout
 * initial_max_data
@@ -370,31 +370,31 @@ In QMux, use of the following Transport Parameters is allowed.
 * initial_max_streams_bidi
 * initial_max_streams_uni
 
-The definition of these Transport Parameters are unchanged.
+The definition of these transport parameters are unchanged.
 
-Use of other Transport Parameters defined in QUIC version 1 is prohibited. When
-an endpoint receives one of the prohibited Transport Parameters, the endpoint
+Use of other transport parameters defined in QUIC version 1 is prohibited. When
+an endpoint receives one of the prohibited transport parameters, the endpoint
 MUST close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
-Endpoints MUST NOT send Transport Parameters that extend QUIC version 1, unless
+Endpoints MUST NOT send transport parameters that extend QUIC version 1, unless
 they are specified to be compatible with QMux.
 
-When receiving Transport Parameters not defined in QUIC version 1, receivers
+When receiving transport parameters not defined in QUIC version 1, receivers
 MUST ignore them unless they are specified to be usable on QMux.
 
 
 ## max_record_size Transport Parameter {#max_record_size}
 
-The `max_record_size` Transport Parameter (0x0571c59429cd0845) is a
+The `max_record_size` transport parameter (0x0571c59429cd0845) is a
 variable-length integer specifying the maximum value of the Size field of a QMux
 Record that the peer can send, in the unit of bytes.
 
-The initial value of the `max_record_size` Transport Parameter is 16382.
+The initial value of the `max_record_size` transport parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
 Size field and a 16382-byte Frames field, aligning with the default capacity of
 a full-sized TLS record.
 
-By sending the Transport Parameter, the maximum record size can only be
+By sending the transport parameter, the maximum record size can only be
 increased. When receiving a value below the initial value, receivers MUST close
 the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
@@ -479,7 +479,7 @@ the use of QMux draft-05.
 TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
 
 When using QMux over TLS that supports early data, clients MAY use early data
-when resuming a connection, by reusing certain Transport Parameters as defined
+when resuming a connection, by reusing certain transport parameters as defined
 in {{Section 7.4.1 of QUIC}}.
 
 Similarly, when accepting early data, servers MUST send transport parameters
@@ -503,8 +503,8 @@ This specification defines the mapping of the Unreliable Datagram Extension.
 
 The use of the Unreliable Datagram Extension {{!QUIC_DATAGRAM=RFC9221}} is
 permitted. The encoding and semantics of the Unreliable Datagram Extension
-remain unchanged, and the use of the extension is negotiated via Transport
-Parameters.
+remain unchanged, and the use of the extension is negotiated via transport
+parameters.
 
 As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.
@@ -524,8 +524,8 @@ involves a retry. Compatible Version Negotiation for QUIC
 between compatible versions during connection establishment without retrying.
 
 By contrast, QMux does not establish connections by itself; the connections are
-set up by the underlying substrate, and QMux exchanges only the Transport
-Parameters after they are established.
+set up by the underlying substrate, and QMux exchanges only the transport
+parameters after they are established.
 
 Due to these differences, the negotiation mechanisms used by QUIC and QMux will
 differ.
@@ -562,7 +562,7 @@ is that, even when TLS is not in use, no additional round-trip is incurred for
 version negotiation.
 
 While QMux version 1 does not specify a concrete method, new versions might use
-the version_information Transport Parameter ({{Section 3 of QUIC-CVN}}) to
+the version_information transport parameter ({{Section 3 of QUIC-CVN}}) to
 discover supported versions and coordinate the switch.
 
 
