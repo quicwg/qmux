@@ -1609,9 +1609,11 @@ necessarily add a full round trip for clients on a full handshake. Servers can
 send the QX_TRANSPORT_PARAMETERS frame immediately after the server's Finished
 message, and clients can receive and process the transport parameters as soon as
 they obtain the keys needed to process application data.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
-<p id="section-4.2-8">If the first frame being received by an endpoint is not a
-QX_TRANSPORT_PARAMETERS frame, the endpoint <span class="bcp14">MUST</span> close the connection with an
-error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
+<p id="section-4.2-8">The QX_TRANSPORT_PARAMETERS frame <span class="bcp14">MUST</span> only be sent as the first frame. If the
+first frame being received by an endpoint is not a QX_TRANSPORT_PARAMETERS
+frame, or if a QX_TRANSPORT_PARAMETERS frame is received other than as the first
+frame, the endpoint <span class="bcp14">MUST</span> close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
 <p id="section-4.2-9">The frame type (0x3f5153300d0a0d0a; "\xffQMX\r\n\r\n" on wire) has been chosen
 so that it can be used to disambiguate QMux from HTTP/1.1 <span>[<a href="#HTTP1" class="cite xref">HTTP1</a>]</span> and
 HTTP/2.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
