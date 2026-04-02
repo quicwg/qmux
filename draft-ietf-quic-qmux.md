@@ -21,6 +21,10 @@ author:
     organization: Apple
     email: ekinnear@apple.com
 
+informative:
+  QUIC-TLS: RFC9001
+
+
 --- abstract
 
 This document specifies QMux version 1. QMux version 1 provides, over
@@ -118,17 +122,27 @@ Congestion control:
   Implementations of QMux simply write outgoing frames to the transport when
   that transport permits.
 
-Confidentially and Integrity:
+Authentication, confidentiality, and integrity protection:
 
 : Unless used upon endpoints between which tampering or monitoring is a
-  non-concern, the transport provides confidentially and integrity protection.
+  non-concern, the transport provides peer authentication, confidentially, and
+  integrity protection.
 
-TLS over TCP provides all these capabilities.
+Application Protocol Negotiation:
 
-UNIX sockets are an example that provides only the first two. Congestion control
-is not employed, as UNIX sockets do not face a shared bottleneck.
-Confidentiality and integrity protection are deemed unnecessary in environments
-where the operating system is trusted.
+: To avoid cross-protocol confusion, the underlying transport provides a
+  mechanism for endpoints to agree on the protocols in use. Without such a
+  mechanism, QMux and application protocols built on top of QMux can only be
+  used between endpoints that have out-of-band agreement on those protocols.
+
+TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
+(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities.
+
+UNIX sockets are an example that provide in-order and guaranteed delivery only.
+Congestion control is not employed, as UNIX sockets do not face a shared
+bottleneck. Confidentiality and integrity protection are deemed unnecessary in
+environments where the operating system is trusted. Agreement on the application
+protocol can be achieved by using different listening sockets.
 
 
 ## QMux Records {#records}
@@ -311,14 +325,14 @@ QX_PING frames are formatted as shown in {{fig-qx-ping}}.
 
 ~~~
 QX_PING Frame {
-  Type (i) = 0xTBD..0xTBD+1,
+  Type (i) = 0x348c67529ef8c7bd..0x348c67529ef8c7be,
   Sequence Number (i),
 }
 ~~~
 {: #fig-qx-ping title="QX_PING Frame Format"}
 
-Type 0xTBD is used for sending a ping (i.e., request the peer to respond). Type
-0xTBD+1 is used in response.
+Type 0x348c67529ef8c7bd is used for sending a ping (i.e., request the peer to
+respond). Type 0x348c67529ef8c7be is used in response.
 
 QX_PING frames contain the following fields:
 
@@ -326,16 +340,17 @@ Sequence Number:
 
 : A variable-length integer used to identify the ping.
 
-When sending QX_PING frames of type 0xTBD, endpoints MUST send monotonically
-increasing values in the Sequence Number field, since that allows the endpoints
-to identify to which ping the peer has responded.
+When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints MUST send
+monotonically increasing values in the Sequence Number field, since that allows
+the endpoints to identify to which ping the peer has responded.
 
-When sending QX_PING frames of type 0xTBD+1 in response, endpoints MUST echo the
-Sequence Number that they received.
+When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
+MUST echo the Sequence Number that they received.
 
-When receiving multiple QX_PING frames of type 0xTBD before having the chance to
-respond, an endpoint MAY only respond with one QX_PING frame of type 0xTBD+1
-carrying the largest Sequence Number that the endpoint has received.
+When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd before having
+the chance to respond, an endpoint MAY only respond with one QX_PING frame of
+type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
+has received.
 
 
 # Transport Parameters
@@ -370,9 +385,9 @@ MUST ignore them unless they are specified to be usable on QMux.
 
 ## max_record_size Transport Parameter {#max_record_size}
 
-The `max_record_size` transport parameter (0xTBD) is a variable-length integer
-specifying the maximum value of the Size field of a QMux Record that the peer
-can send, in the unit of bytes.
+The `max_record_size` transport parameter (0x0571c59429cd0845) is a
+variable-length integer specifying the maximum value of the Size field of a QMux
+Record that the peer can send, in the unit of bytes.
 
 The initial value of the `max_record_size` transport parameter is 16382.
 This value allows a sender to construct a 16KB QMux Record by using a 2-byte
@@ -423,13 +438,49 @@ resources allocated for the Service are freed and the underlying transport is
 closed immediately.
 
 
-# Using 0-RTT
+# Using TLS
 
-TLS 1.3 introduced the concept of early data (also knows as 0-RTT data).
+When QMux is used over TLS, TLS provides capabilities in addition to
+confidentiality and integrity protection.
 
-When using QMux on top of TLS that supports early data, clients MAY use early
-data when resuming a connection, by reusing certain transport parameters as
-defined in {{Section 7.4.1 of QUIC}}.
+
+## Protocol Negotiation {#negotiation}
+
+As in QUIC {{Section 8.1 of QUIC-TLS}}, when running an application protocol
+over QMux over TLS, endpoints MUST use ALPN {{ALPN}} to agree on an application
+protocol, unless another mechanism is used for agreeing on an application
+protocol.
+
+ALPN protocol identifiers identify the application protocol in use. Application
+protocols that use QMux over TLS MUST designate their ALPN identifier and
+specify that they use QMux version 1. The identifier for a mapping to QMux MUST
+be different from the mapping of the same protocol to QUIC,
+to retain compatibility with Service Binding and Parameter Specification
+via the DNS {{?SVCB=RFC9460}}.
+
+When using ALPN, endpoints MUST abort the TLS handshake with a
+no_application_protocol TLS alert ({{Section 3.2 of ALPN}}) if an application
+protocol is not negotiated. While ALPN only requires that servers use this
+alert, QMux clients MUST also abort the handshake when ALPN negotiation fails.
+
+QMux is not itself an application protocol and does not have an ALPN identifier.
+
+TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
+format might change. Therefore, when testing interoperability of application
+protocols using a draft version of QMux, applications should specify, for each
+ALPN identifier they define, which draft version of QMux is used. As an example,
+an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP and QMux,
+identifying the use of a specific QMux draft version in its specification.
+the use of QMux draft-05.
+
+
+## Using 0-RTT
+
+TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
+
+When using QMux over TLS that supports early data, clients MAY use early data
+when resuming a connection, by reusing certain transport parameters as defined
+in {{Section 7.4.1 of QUIC}}.
 
 Similarly, when accepting early data, servers MUST send transport parameters
 that comply with the restrictions in {{Section 7.4.1 of QUIC}}. This preserves
@@ -488,11 +539,11 @@ version negotiation and upgrade.
 When a new QUIC version that provides a different interface to applications is
 specified, application protocols developed for that version might be assigned a
 new identifier for the TLS Application-Layer Protocol Negotiation (ALPN)
-extension {{?ALPN=RFC7301}}.
+extension {{ALPN}}.
 
 Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
-both the application protocol and the underlying QMux version.
+both the application protocol and the underlying QMux version ({{negotiation}}).
 
 When TLS is not the underlying transport, endpoints can use the first 8 bytes
 exchanged on the transport (i.e., the type field of the
@@ -543,7 +594,38 @@ resource-exhaustion attacks.
 
 # IANA Considerations
 
-TODO
+This document defines new frame types and a transport parameter for use
+with QUIC. IANA is requested to register the following values in the
+registries under <https://www.iana.org/assignments/quic>.
+
+The codepoints listed below, unless otherwise stated, were selected using the
+deterministic method described at <https://martinthomson.github.io/quic-pick/>,
+with seeds of the form `draft-ietf-quic-qmux-NN_<fieldtype>`. Upon publication
+as an RFC, IANA is requested to replace provisional codepoints with permanent
+assignments from the standards-action range.
+
+
+## QUIC Frame Types
+
+The following entries should be added to the "QUIC Frame Types"
+registry.
+
+| Value | Frame Type Name | Status | Specification |
+|---|---|---|---|
+| 0x3f5153300d0a0d0a | QX_TRANSPORT_PARAMETERS | provisional | {{fig-qx-transport-parameters}} |
+| 0x348c67529ef8c7bd - 0x348c67529ef8c7be | QX_PING | provisional | {{fig-qx-ping}} |
+
+The value 0x3f5153300d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen deliberately
+to function as a protocol magic number see ({{fig-qx-transport-parameters}}).
+
+## QUIC Transport Parameters
+
+The following entry should be added to the "QUIC Transport Parameters"
+registry.
+
+| Value | Parameter Name | Status | Specification |
+|---|---|---|---|
+| 0x0571c59429cd0845 | max_record_size | provisional | {{max_record_size}} |
 
 
 --- back
