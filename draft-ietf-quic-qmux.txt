@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 3 October 2026                                       Cloudflare
+Expires: 4 October 2026                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            1 April 2026
+                                                            2 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 October 2026.
+   This Internet-Draft will expire on 4 October 2026.
 
 Copyright Notice
 
@@ -91,6 +91,8 @@ Table of Contents
    11. Implementation Considerations
    12. Security Considerations
    13. IANA Considerations
+     13.1.  QUIC Frame Types
+     13.2.  QUIC Transport Parameters
    14. References
      14.1.  Normative References
      14.2.  Informative References
@@ -404,32 +406,32 @@ Table of Contents
    QX_PING frames are formatted as shown in Figure 3.
 
    QX_PING Frame {
-     Type (i) = 0xTBD..0xTBD+1,
+     Type (i) = 0x348c67529ef8c7bd..0x348c67529ef8c7be,
      Sequence Number (i),
    }
 
                        Figure 3: QX_PING Frame Format
 
-   Type 0xTBD is used for sending a ping (i.e., request the peer to
-   respond).  Type 0xTBD+1 is used in response.
+   Type 0x348c67529ef8c7bd is used for sending a ping (i.e., request the
+   peer to respond).  Type 0x348c67529ef8c7be is used in response.
 
    QX_PING frames contain the following fields:
 
    Sequence Number:  A variable-length integer used to identify the
       ping.
 
-   When sending QX_PING frames of type 0xTBD, endpoints MUST send
-   monotonically increasing values in the Sequence Number field, since
-   that allows the endpoints to identify to which ping the peer has
-   responded.
+   When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints
+   MUST send monotonically increasing values in the Sequence Number
+   field, since that allows the endpoints to identify to which ping the
+   peer has responded.
 
-   When sending QX_PING frames of type 0xTBD+1 in response, endpoints
-   MUST echo the Sequence Number that they received.
+   When sending QX_PING frames of type 0x348c67529ef8c7be in response,
+   endpoints MUST echo the Sequence Number that they received.
 
-   When receiving multiple QX_PING frames of type 0xTBD before having
-   the chance to respond, an endpoint MAY only respond with one QX_PING
-   frame of type 0xTBD+1 carrying the largest Sequence Number that the
-   endpoint has received.
+   When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd
+   before having the chance to respond, an endpoint MAY only respond
+   with one QX_PING frame of type 0x348c67529ef8c7be carrying the
+   largest Sequence Number that the endpoint has received.
 
 5.  Transport Parameters
 
@@ -470,9 +472,9 @@ Table of Contents
 
 5.2.  max_record_size Transport Parameter
 
-   The max_record_size Transport Parameter (0xTBD) is a variable-length
-   integer specifying the maximum value of the Size field of a QMux
-   Record that the peer can send, in the unit of bytes.
+   The max_record_size Transport Parameter (0x0571c59429cd0845) is a
+   variable-length integer specifying the maximum value of the Size
+   field of a QMux Record that the peer can send, in the unit of bytes.
 
    The initial value of the max_record_size Transport Parameter is
    16382.  This value allows a sender to construct a 16KB QMux Record by
@@ -679,7 +681,51 @@ Table of Contents
 
 13.  IANA Considerations
 
-   TODO
+   This document defines new frame types and a transport parameter for
+   use with QUIC.  IANA is requested to register the following values in
+   the registries under https://www.iana.org/assignments/quic
+   (https://www.iana.org/assignments/quic).
+
+   The codepoints listed below, unless otherwise stated, were selected
+   using the deterministic method described at
+   https://martinthomson.github.io/quic-pick/
+   (https://martinthomson.github.io/quic-pick/), with seeds of the form
+   draft-ietf-quic-qmux-NN_<fieldtype>.  Upon publication as an RFC,
+   IANA is requested to replace provisional codepoints with permanent
+   assignments from the standards-action range.
+
+13.1.  QUIC Frame Types
+
+   The following entries should be added to the "QUIC Frame Types"
+   registry.
+
+   +==================+=======================+===========+=============+
+   |Value             |Frame Type Name        |Status     |Specification|
+   +==================+=======================+===========+=============+
+   |0x3f5153300d0a0d0a|QX_TRANSPORT_PARAMETERS|provisional|Figure 2     |
+   +------------------+-----------------------+-----------+-------------+
+   |0x348c67529ef8c7bd|QX_PING                |provisional|Figure 3     |
+   |-                 |                       |           |             |
+   |0x348c67529ef8c7be|                       |           |             |
+   +------------------+-----------------------+-----------+-------------+
+
+                                  Table 1
+
+   The value 0x3f5153300d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen
+   deliberately to function as a protocol magic number see (Figure 2).
+
+13.2.  QUIC Transport Parameters
+
+   The following entry should be added to the "QUIC Transport
+   Parameters" registry.
+
+   +====================+=================+===========+===============+
+   | Value              | Parameter Name  |Status     | Specification |
+   +====================+=================+===========+===============+
+   | 0x0571c59429cd0845 | max_record_size |provisional| Section 5.2   |
+   +--------------------+-----------------+-----------+---------------+
+
+                                 Table 2
 
 14.  References
 
