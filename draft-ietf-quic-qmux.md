@@ -354,6 +354,18 @@ the chance to respond, an endpoint MAY only respond with one QX_PING frame of
 type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
 has received.
 
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7be with a
+sequence number greater than the greatest sequence number that it sent in a
+QX_PING frame of type 0x348c67529ef8c7bd, the endpoint MUST close the connection
+with an error of type PROTOCOL_VIOLATION. Similarly, an endpoint MAY detect a
+sequence number that it did not send and close the connection with the same
+error.
+
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd with a
+sequence number smaller than the previous sequence number received in a frame of
+the same type, the endpoint MUST close the connection with an error of type
+PROTOCOL_VIOLATION.
+
 
 # Transport Parameters
 
