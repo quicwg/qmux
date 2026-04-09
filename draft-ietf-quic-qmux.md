@@ -373,7 +373,7 @@ following transport parameters is allowed:
 * initial_max_streams_bidi
 * initial_max_streams_uni
 
-The definition of these transport parameters are unchanged.
+The definitions of these transport parameters are unchanged.
 
 Use of other transport parameters defined in {{QUIC}} is prohibited. When an
 endpoint receives one of the prohibited transport parameters, the endpoint MUST
