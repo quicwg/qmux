@@ -409,7 +409,8 @@ FRAME_ENCODING_ERROR.
 
 This document does not specify the use of the `max_record_size` transport
 parameter with QUIC version 1. Absent such a specification, QUIC version 1
-endpoints are required to ignore the `max_record_size` transport parameter.
+endpoints are required to ignore the `max_record_size` transport parameter
+({{Section 7.4.2 of QUIC}}).
 
 
 # Forward Progress and Flow Control {#forward-progress-flow-control}
