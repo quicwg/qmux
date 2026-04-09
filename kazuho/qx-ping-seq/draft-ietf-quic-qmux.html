@@ -1652,8 +1652,8 @@ respond). Type 0x348c67529ef8c7be is used in response.<a href="#section-4.3-4" c
         <dd class="break"></dd>
 </dl>
 <p id="section-4.3-7">When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints <span class="bcp14">MUST</span> send
-monotonically increasing values in the Sequence Number field, since that allows
-the endpoints to identify to which ping the peer has responded.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+strictly increasing values in the Sequence Number field, since that allows the
+endpoints to identify to which ping the peer has responded.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
 <p id="section-4.3-8">When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
 <span class="bcp14">MUST</span> echo the Sequence Number that they received.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
 <p id="section-4.3-9">When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd before having
@@ -1667,8 +1667,8 @@ with an error of type PROTOCOL_VIOLATION. Similarly, an endpoint <span class="bc
 sequence number that it did not send and close the connection with the same
 error.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
 <p id="section-4.3-11">If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd with a
-sequence number smaller than the previous sequence number received in a frame of
-the same type, the endpoint <span class="bcp14">MUST</span> close the connection with an error of type
+sequence number no greater than the previous sequence number received in a frame
+of the same type, the endpoint <span class="bcp14">MUST</span> close the connection with an error of type
 PROTOCOL_VIOLATION.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
 </section>
 </div>

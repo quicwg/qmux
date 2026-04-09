@@ -423,9 +423,9 @@ Table of Contents
       ping.
 
    When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints
-   MUST send monotonically increasing values in the Sequence Number
-   field, since that allows the endpoints to identify to which ping the
-   peer has responded.
+   MUST send strictly increasing values in the Sequence Number field,
+   since that allows the endpoints to identify to which ping the peer
+   has responded.
 
    When sending QX_PING frames of type 0x348c67529ef8c7be in response,
    endpoints MUST echo the Sequence Number that they received.
@@ -443,7 +443,7 @@ Table of Contents
    send and close the connection with the same error.
 
    If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd
-   with a sequence number smaller than the previous sequence number
+   with a sequence number no greater than the previous sequence number
    received in a frame of the same type, the endpoint MUST close the
    connection with an error of type PROTOCOL_VIOLATION.
 
