@@ -362,7 +362,8 @@ new transport parameter specific to QMux is defined.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
-In QMux, use of the following transport parameters is allowed.
+Among the transport parameters defined in {{Section 18.2 of QUIC}}, use of the
+following transport parameters is allowed:
 
 * max_idle_timeout
 * initial_max_data
@@ -374,15 +375,14 @@ In QMux, use of the following transport parameters is allowed.
 
 The definition of these transport parameters are unchanged.
 
-Use of other transport parameters defined in QUIC version 1 is prohibited. When
-an endpoint receives one of the prohibited transport parameters, the endpoint
-MUST close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+Use of other transport parameters defined in {{QUIC}} is prohibited. When an
+endpoint receives one of the prohibited transport parameters, the endpoint MUST
+close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
-Endpoints MUST NOT send transport parameters that extend QUIC version 1, unless
-they are specified to be compatible with QMux.
-
-When receiving transport parameters not defined in QUIC version 1, receivers
-MUST ignore them unless they are specified to be usable on QMux.
+Endpoints MUST NOT send transport parameters defined outside of {{QUIC}} unless
+they are specified to be usable with QMux. Similarly, endpoints MUST ignore
+transport parameters defined outside of {{QUIC}} unless they are specified to be
+usable with QMux; see {{extensions}}.
 
 
 ## max_record_size Transport Parameter {#max_record_size}
