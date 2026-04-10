@@ -375,14 +375,31 @@ following transport parameters is allowed:
 
 The definitions of these transport parameters are unchanged.
 
-Use of other transport parameters defined in {{QUIC}} is prohibited. When an
-endpoint receives one of the prohibited transport parameters, the endpoint MUST
-close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+Use of all other transport parameters defined in {{Section 18.2 of QUIC}},
+namely the following, is prohibited:
+
+* original_destination_connection_id
+* stateless_reset_token
+* max_udp_payload_size
+* ack_delay_exponent
+* max_ack_delay
+* disable_active_migration
+* preferred_address
+* active_connection_id_limit
+* initial_source_connection_id
+* retry_source_connection_id
+
+When an endpoint receives one of the prohibited transport parameters, the
+endpoint MUST close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.
 
 Endpoints MUST NOT send transport parameters defined outside of {{QUIC}} unless
 they are specified to be usable with QMux. Similarly, endpoints MUST ignore
 transport parameters defined outside of {{QUIC}} unless they are specified to be
 usable with QMux; see {{extensions}}.
+
+As in QUIC, reserved transport parameters can be used to exercise the peer's
+ability to ignore unknown transport parameters ({{Section 7.4.2 of QUIC}}).
 
 
 ## max_record_size Transport Parameter {#max_record_size}
