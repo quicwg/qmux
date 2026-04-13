@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 11 October 2026                                      Cloudflare
+Expires: 15 October 2026                                      Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            9 April 2026
+                                                           13 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 October 2026.
+   This Internet-Draft will expire on 15 October 2026.
 
 Copyright Notice
 
@@ -443,9 +443,9 @@ Table of Contents
    send and close the connection with the same error.
 
    If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd
-   with a sequence number no greater than the previous sequence number
-   received in a frame of the same type, the endpoint MUST close the
-   connection with an error of type PROTOCOL_VIOLATION.
+   with a sequence number less than or equal to the previous sequence
+   number received in a frame of the same type, the endpoint MUST close
+   the connection with an error of type PROTOCOL_VIOLATION.
 
 5.  Transport Parameters
 
