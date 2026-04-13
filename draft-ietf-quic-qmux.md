@@ -362,7 +362,7 @@ sequence number that it did not send and close the connection with the same
 error.
 
 If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd with a
-sequence number no greater than the previous sequence number received in a frame
+sequence number less than or equal to the previous sequence number received in a frame
 of the same type, the endpoint MUST close the connection with an error of type
 PROTOCOL_VIOLATION.
 
