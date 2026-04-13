@@ -343,8 +343,8 @@ Sequence Number:
 : A variable-length integer used to identify the ping.
 
 When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints MUST send
-monotonically increasing values in the Sequence Number field, since that allows
-the endpoints to identify to which ping the peer has responded.
+strictly increasing values in the Sequence Number field, since that allows the
+endpoints to identify to which ping the peer has responded.
 
 When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
 MUST echo the Sequence Number that they received.
@@ -353,6 +353,18 @@ When receiving multiple QX_PING frames of type 0x348c67529ef8c7bd before having
 the chance to respond, an endpoint MAY only respond with one QX_PING frame of
 type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
 has received.
+
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7be with a
+sequence number greater than the greatest sequence number that it sent in a
+QX_PING frame of type 0x348c67529ef8c7bd, the endpoint MUST close the connection
+with an error of type PROTOCOL_VIOLATION. Similarly, an endpoint MAY detect a
+sequence number that it did not send and close the connection with the same
+error.
+
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd with a
+sequence number less than or equal to the previous sequence number received in a frame
+of the same type, the endpoint MUST close the connection with an error of type
+PROTOCOL_VIOLATION.
 
 
 # Transport Parameters
