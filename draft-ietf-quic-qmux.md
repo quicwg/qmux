@@ -389,16 +389,18 @@ MUST ignore them unless they are specified to be usable on QMux.
 
 The `max_record_size` transport parameter (0x0571c59429cd0845) is a
 variable-length integer specifying the maximum value of the Size field of a QMux
-Record that the peer can send, in the unit of bytes.
+Record ({{records}}) that the peer can send, in the unit of bytes.
 
-The initial value of the `max_record_size` transport parameter is 16382.
-This value allows a sender to construct a 16KB QMux Record by using a 2-byte
-Size field and a 16382-byte Frames field, aligning with the default capacity of
-a full-sized TLS record.
+As required by {{QUIC}}, if the `max_record_size` transport parameter is absent
+a default value applies. The default value of the `max_record_size` transport
+parameter is 16382. This value allows a sender to construct a 16KB QMux Record
+by using a 2-byte Size field and a 16382-byte Frames field, aligning with the
+default capacity of a full-sized TLS record; see {{Section 5.1 of TLS13}}.
 
-By sending the transport parameter, the maximum record size can only be
-increased. When receiving a value below the initial value, receivers MUST close
-the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+When the `max_record_size` transport parameter is sent, the value MUST be equal
+to or greater than the default value. When receiving a value less than the
+default value, receivers MUST close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.
 
 Endpoints MUST NOT send QMux Records with a Frames field that exceeds the
 maximum declared by the peer.
