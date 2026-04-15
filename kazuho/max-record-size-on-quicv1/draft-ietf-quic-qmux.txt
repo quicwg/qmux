@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 11 October 2026                                      Cloudflare
+Expires: 17 October 2026                                      Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                            9 April 2026
+                                                           15 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 October 2026.
+   This Internet-Draft will expire on 17 October 2026.
 
 Copyright Notice
 
@@ -497,8 +497,9 @@ Table of Contents
 
    This document does not specify the use of the max_record_size
    transport parameter with QUIC version 1.  Absent such a
-   specification, QUIC version 1 endpoints are required to ignore the
-   max_record_size transport parameter (Section 7.4.2 of [QUIC]).
+   specification, the max_record_size transport parameter is ignored by
+   QUIC version 1 endpoints as an unknown transport parameter, as
+   defined in (Section 7.4.2 of [QUIC]).
 
 6.  Forward Progress and Flow Control
 
