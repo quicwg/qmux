@@ -398,8 +398,10 @@ they are specified to be usable with QMux. Similarly, endpoints MUST ignore
 transport parameters defined outside of {{QUIC}} unless they are specified to be
 usable with QMux; see {{extensions}}.
 
-As in QUIC, reserved transport parameters can be used to exercise the peer's
-ability to ignore unknown transport parameters ({{Section 7.4.2 of QUIC}}).
+QUIC defines a reserved range of transport parameters for the purpose of
+exercising a peer's ability to ignore unknown transport parameters
+({{Section 7.4.2 of QUIC}}. The use of these transport parameters in QMux for
+the same purpose is allowed.
 
 
 ## max_record_size Transport Parameter {#max_record_size}
