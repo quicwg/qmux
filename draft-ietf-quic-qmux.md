@@ -407,6 +407,11 @@ When receiving a QMux Record with a Frames field that exceeds the declared
 maximum, receivers MUST close the connection with an error of type
 FRAME_ENCODING_ERROR.
 
+This document does not specify the use of the `max_record_size` transport
+parameter with QUIC version 1. Absent such a specification, the
+`max_record_size` transport parameter is ignored by QUIC version 1 endpoints as
+an unknown transport parameter, as defined in ({{Section 7.4.2 of QUIC}}).
+
 
 # Forward Progress and Flow Control {#forward-progress-flow-control}
 
