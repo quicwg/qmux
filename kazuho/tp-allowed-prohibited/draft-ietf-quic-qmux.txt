@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 12 October 2026                                      Cloudflare
+Expires: 17 October 2026                                      Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           10 April 2026
+                                                           15 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 October 2026.
+   This Internet-Draft will expire on 17 October 2026.
 
 Copyright Notice
 
@@ -493,9 +493,10 @@ Table of Contents
    endpoints MUST ignore transport parameters defined outside of [QUIC]
    unless they are specified to be usable with QMux; see Section 9.
 
-   As in QUIC, reserved transport parameters can be used to exercise the
-   peer's ability to ignore unknown transport parameters (Section 7.4.2
-   of [QUIC]).
+   QUIC defines a reserved range of transport parameters for the purpose
+   of exercising a peer's ability to ignore unknown transport parameters
+   (Section 7.4.2 of [QUIC].  The use of these transport parameters in
+   QMux for the same purpose is allowed.
 
 5.2.  max_record_size Transport Parameter
 
