@@ -260,7 +260,7 @@ These changes do not impact the senders' capability to interleave STREAM frames
 from multiple streams.
 
 
-## QX_TRANSPORT_PARAMETERS Frames
+## QX_TRANSPORT_PARAMETERS Frames {#qx-tp-frames}
 
 In QMux, transport parameters are exchanged as frames.
 
@@ -357,8 +357,10 @@ has received.
 
 # Transport Parameters
 
-QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
-new transport parameter specific to QMux is defined.
+As in QUIC, QMux exchanges transport parameters following the rules established
+in {{Section 7.4 of QUIC}}, with the modifications described in the subsections
+below. The container for carrying transport parameters is also different; see
+{{qx-tp-frames}}.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
