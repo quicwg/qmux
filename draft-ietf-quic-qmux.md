@@ -452,8 +452,10 @@ acknowledgments.
 When no other traffic is available, QX_PING frames can be used to elicit a peer
 response and keep both the QMux connection and the underlying transport active.
 
-When an endpoint reaches the idle timeout, the connection is closed and the
-underlying transport is closed immediately.
+When an endpoint reaches the idle timeout, they can immediately
+close the underlying transport
+or abandon it without transmitting any signal
+at their discretion.
 
 
 ## Underlying Transport Termination
