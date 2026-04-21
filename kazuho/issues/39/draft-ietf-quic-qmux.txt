@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 18 October 2026                                      Cloudflare
+Expires: 23 October 2026                                      Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           16 April 2026
+                                                           21 April 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 October 2026.
+   This Internet-Draft will expire on 23 October 2026.
 
 Copyright Notice
 
@@ -544,8 +544,9 @@ Table of Contents
    elicit a peer response and keep both the QMux connection and the
    underlying transport active.
 
-   When an endpoint reaches the idle timeout, the connection is closed
-   and the underlying transport is closed immediately.
+   When an endpoint reaches the idle timeout, they can immediately close
+   the underlying transport or abandon it without transmitting any
+   signal at their discretion.
 
 7.3.  Underlying Transport Termination
 
