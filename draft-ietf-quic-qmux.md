@@ -424,20 +424,43 @@ amount of stream data a peer can send is limited by flow control
 datagrams when they cannot be promptly delivered to the application.
 
 
-# Closing the Connection
+# Connection Termination
 
-As is with QUIC version 1, a connection can be closed either by a
-CONNECTION_CLOSE frame or by an idle timeout.
+A QMux connection can be terminated by a CONNECTION_CLOSE frame, by an idle
+timeout, or by termination of the underlying transport.
 
-Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
-Endpoints reset the idle timer when sending or receiving QMux frames. When no
-other traffic is available, QX_PING frames can be used to elicit a peer
-response and keep the connection active.
 
-Unlike QUIC version 1, there is no draining period; once an endpoint sends or
-receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
-resources allocated for the Service are freed and the underlying transport is
-closed immediately.
+## Immediate Close
+
+As in QUIC version 1, an endpoint closes the QMux connection by sending a
+CONNECTION_CLOSE frame. Unlike QUIC version 1, there is no draining period; once
+an endpoint sends or receives the CONNECTION_CLOSE frame, all resources
+allocated for the connection are freed and the underlying transport is closed
+immediately.
+
+
+## Idle Timeout
+
+As in QUIC version 1, endpoints can negotiate an idle timeout using the
+max_idle_timeout transport parameter.
+
+Endpoints reset the idle timer when sending or receiving a QMux record. Activity
+on the underlying transport, such as TCP keepalives, does not reset the idle
+timer. Unlike QUIC version 1, idle timeout handling does not rely on
+acknowledgments.
+
+When no other traffic is available, QX_PING frames can be used to elicit a peer
+response and keep both the QMux connection and the underlying transport active.
+
+When an endpoint reaches the idle timeout, they can immediately close the
+underlying transport or abandon it without transmitting any signal at their
+discretion.
+
+
+## Underlying Transport Termination
+
+When the underlying transport closes or becomes unavailable (e.g., due to a TCP
+reset or a TLS fatal alert), the QMux connection is also terminated.
 
 
 # Using TLS
@@ -589,9 +612,30 @@ throughput.
 
 # Security Considerations
 
+QMux inherits many of the security properties and considerations laid out in
+{{Section 21 of QUIC}}. This section describes considerations specific to QMux.
+
+
+## Forward Progress
+
 Failure to follow the forward-progress requirements in
 {{forward-progress-flow-control}} can lead to deadlock and can be exploited for
 resource-exhaustion attacks.
+
+
+## Denial of Service
+
+As in QUIC ({{Section 21.9 of QUIC}}), valid QMux frames can be used to keep a
+connection alive, to consume processing resources disproportionate to useful
+progress, or to force an endpoint to generate responses. For example, sending
+large numbers of small records, PADDING frames, tiny flow control increments, or
+QX_PING frames can be used for such purposes. Implementations SHOULD monitor for
+such traffic patterns and MAY treat suspicious activity as a connection error of
+type PROTOCOL_VIOLATION.
+
+Unlike QUIC, where each packet is a self-contained unit, QMux records can arrive
+incrementally over the underlying byte stream. Implementations need to consider
+resources held for partially received records.
 
 
 # IANA Considerations
