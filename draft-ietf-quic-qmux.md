@@ -426,41 +426,59 @@ datagrams when they cannot be promptly delivered to the application.
 
 # Connection Termination
 
-A QMux connection can be terminated by a CONNECTION_CLOSE frame, by an idle
-timeout, or by termination of the underlying transport.
-
-
-## Immediate Close
-
-As in QUIC version 1, an endpoint closes the QMux connection by sending a
-CONNECTION_CLOSE frame. Unlike QUIC version 1, there is no draining period; once
-an endpoint sends or receives the CONNECTION_CLOSE frame, all resources
-allocated for the connection are freed and the underlying transport is closed
-immediately.
+A QMux connection can be terminated by an idle timeout, by a CONNECTION_CLOSE
+frame, or by observing a reset of the underlying transport.
 
 
 ## Idle Timeout
 
-As in QUIC version 1, endpoints can negotiate an idle timeout using the
+As in QUIC version 1, endpoints negotiate an idle timeout using the
 max_idle_timeout transport parameter.
 
 Endpoints reset the idle timer when sending or receiving a QMux record. Activity
 on the underlying transport, such as TCP keepalives, does not reset the idle
 timer. Unlike QUIC version 1, idle timeout handling does not rely on
-acknowledgments.
+acknowledgments; QMux endpoints do not increase their idle timeouts relative to
+the current Probe Timeout (PTO).
 
-When no other traffic is available, QX_PING frames can be used to elicit a peer
-response and keep both the QMux connection and the underlying transport active.
+When idle, a QMux connection may also be torn down by the underlying transport
+stack or by intermediaries (e.g., Network Address Translation {{?RFC7857}}),
+independent of the negotiated timeout.
 
-When an endpoint reaches the idle timeout, they can immediately close the
-underlying transport or abandon it without transmitting any signal at their
-discretion.
+QX_PING frames can be used to elicit a peer response and keep both the QMux
+connection and the underlying transport active.
 
 
-## Underlying Transport Termination
+## Initiating a Connection Close
 
-When the underlying transport closes or becomes unavailable (e.g., due to a TCP
-reset or a TLS fatal alert), the QMux connection is also terminated.
+When the idle timeout expires, an endpoint gracefully shuts down its sending
+side of the underlying transport, without sending any frames.
+
+Separately, as in QUIC version 1, an endpoint can initiate closing of a QMux
+connection by sending a CONNECTION_CLOSE frame and then gracefully shuts down
+its sending side of the underlying transport.
+
+In either case, once shutting down the sending side, the endpoint SHOULD wait
+for the peer to gracefully shut down the peer's sending side. The use of
+graceful shutdown mitigates the risk of undelivered records and frames
+becoming lost due to abrupt termination of the underlying transport. While
+waiting for the peer to gracefully shut down, QMux endpoints SHOULD discard any
+data they receive without processing it, similarly to QUIC version 1 endpoints
+discarding packets received during the draining period
+({{Section 10.2.2 of QUIC}}).
+
+
+## Responding to a Connection Close
+
+When receiving a CONNECTION_CLOSE frame or observing the peer shut down the
+peer's sending side, the receiving endpoint SHOULD gracefully shut down its
+sending side, without sending any frames.
+
+
+## Handling Resets
+
+When the underlying transport becomes unavailable (e.g., due to a TCP reset or a
+TLS fatal alert), the QMux connection is terminated immediately.
 
 
 # Using TLS
