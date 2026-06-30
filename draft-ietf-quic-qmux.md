@@ -475,7 +475,7 @@ sending side without sending any frames, or after sending a single
 CONNECTION_CLOSE frame.
 
 
-## Handling Resets
+## Handling Resets {#handling-resets}
 
 When the underlying transport becomes unavailable (e.g., due to a TCP reset or a
 TLS fatal alert), the QMux connection is terminated immediately.
@@ -654,6 +654,11 @@ type PROTOCOL_VIOLATION.
 Unlike QUIC, where each packet is a self-contained unit, QMux records can arrive
 incrementally over the underlying byte stream. Implementations need to consider
 resources they might use to hold partially received records.
+
+Unlike QUIC, QMux does not provide protection against premature connection
+termination by unauthenticated on-path entities. An intermediary that can
+disrupt the underlying transport will be able to successfully terminate
+connections; see {{handling-resets}}.
 
 
 # IANA Considerations
