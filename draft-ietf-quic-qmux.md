@@ -457,8 +457,8 @@ As a consequence, the idle timeout of QMux is defined as follows:
 
 While idle, a QMux connection may also be torn down by timers outside of QMux;
 e.g., Network Address Translation {{?RFC7857}}. QX_PING frames can be used to
-elicit a peer response and keep both the QMux connection and the underlying
-transport active.
+elicit a peer response, which could keep inactivity timers at lower transport
+layers and intermediaries from causing premature connection termination.
 
 
 ## Initiating a Connection Close
