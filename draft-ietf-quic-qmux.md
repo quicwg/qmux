@@ -391,7 +391,7 @@ The `max_record_size` transport parameter (0x0571c59429cd0845) is a
 variable-length integer specifying the maximum value of the Size field of a QMux
 Record ({{records}}) that the peer can send, in the unit of bytes.
 
-As required by {{QUIC}}, if the `max_record_size` transport parameter is absent
+As required by {{QUIC}}, if the `max_record_size` transport parameter is absent,
 a default value applies. The default value of the `max_record_size` transport
 parameter is 16382. This value allows a sender to construct a 16KB QMux Record
 by using a 2-byte Size field and a 16382-byte Frames field, aligning with the
