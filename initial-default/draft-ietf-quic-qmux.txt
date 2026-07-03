@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 17 October 2026                                      Cloudflare
+Expires: 4 January 2027                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                           15 April 2026
+                                                             3 July 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 October 2026.
+   This Internet-Draft will expire on 4 January 2027.
 
 Copyright Notice
 
@@ -480,7 +480,7 @@ Table of Contents
    unit of bytes.
 
    As required by [QUIC], if the max_record_size transport parameter is
-   absent a default value applies.  The default value of the
+   absent, a default value applies.  The default value of the
    max_record_size transport parameter is 16382.  This value allows a
    sender to construct a 16KB QMux Record by using a 2-byte Size field
    and a 16382-byte Frames field, aligning with the default capacity of
