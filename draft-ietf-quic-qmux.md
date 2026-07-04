@@ -374,6 +374,18 @@ In QMux, use of the following transport parameters is allowed.
 
 The definition of these transport parameters are unchanged.
 
+Although an endpoint could convey connection-level limits using MAX_DATA and
+MAX_STREAMS frames in its first flight, the initial flow-control transport
+parameters from QUIC version 1 are used. The
+`initial_max_stream_data_bidi_local`, `initial_max_stream_data_bidi_remote`,
+and `initial_max_stream_data_uni` parameters set the flow-control credit
+available on a stream as soon as it is opened, including streams opened
+later in the connection. Using these transport parameters also lets a
+client send 0-RTT data within remembered limits on a resumed connection,
+before the peer's frames are received (see {{using-0rtt}}), and preserves
+the flow-control model of QUIC version 1 so that existing implementations
+can be reused without modification.
+
 Use of other transport parameters defined in QUIC version 1 is prohibited. When
 an endpoint receives one of the prohibited transport parameters, the endpoint
 MUST close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
@@ -478,7 +490,7 @@ identifying the use of a specific QMux draft version in its specification.
 the use of QMux draft-05.
 
 
-## Using 0-RTT
+## Using 0-RTT {#using-0rtt}
 
 TLS 1.3 introduced the concept of early data (also known as 0-RTT data).
 
