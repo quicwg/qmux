@@ -1205,7 +1205,21 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-forward-progress-and-flow-c" class="internal xref">Forward Progress and Flow Control</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-closing-the-connection" class="internal xref">Closing the Connection</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-connection-termination" class="internal xref">Connection Termination</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-idle-timeout" class="internal xref">Idle Timeout</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-initiating-a-connection-clo" class="internal xref">Initiating a Connection Close</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-responding-to-a-connection-" class="internal xref">Responding to a Connection Close</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-handling-resets" class="internal xref">Handling Resets</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-using-tls" class="internal xref">Using TLS</a></p>
@@ -1245,6 +1259,14 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
             <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-forward-progress" class="internal xref">Forward Progress</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-denial-of-service" class="internal xref">Denial of Service</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -1808,21 +1830,98 @@ amount of stream data a peer can send is limited by flow control
 datagrams when they cannot be promptly delivered to the application.<a href="#section-6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="closing-the-connection">
+<div id="connection-termination">
 <section id="section-7">
-      <h2 id="name-closing-the-connection">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-closing-the-connection" class="section-name selfRef">Closing the Connection</a>
+      <h2 id="name-connection-termination">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-connection-termination" class="section-name selfRef">Connection Termination</a>
       </h2>
-<p id="section-7-1">As is with QUIC version 1, a connection can be closed either by a
-CONNECTION_CLOSE frame or by an idle timeout.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
-Endpoints reset the idle timer when sending or receiving QMux frames. When no
-other traffic is available, QX_PING frames can be used to elicit a peer
-response and keep the connection active.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">Unlike QUIC version 1, there is no draining period; once an endpoint sends or
-receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
-resources allocated for the Service are freed and the underlying transport is
-closed immediately.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-1">A QMux connection can be terminated by an idle timeout, by a CONNECTION_CLOSE
+frame, or by observing a closure of the underlying transport.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<div id="idle-timeout">
+<section id="section-7.1">
+        <h3 id="name-idle-timeout">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
+        </h3>
+<p id="section-7.1-1">In QUIC version 1, the idle timer is reset whenever a packet is received and
+processed successfully, including acknowledgment-only packets. It also raises
+the idle timeout using PTO, a value derived from when acknowledgments are
+received. QMux cannot adopt this approach as-is since acknowledgments are not
+processed by QMux stacks; they are processed by the underlying transport
+instead.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">As a consequence, the idle timeout of QMux is defined as follows:<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.1-3.1">
+            <p id="section-7.1-3.1.1">As in QUIC version 1, endpoints negotiate an idle timeout using the
+max_idle_timeout transport parameter.<a href="#section-7.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.1-3.2">
+            <p id="section-7.1-3.2.1">As in QUIC version 1, endpoints reset the idle timer each time a QMux record
+is completely received.<a href="#section-7.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.1-3.3">
+            <p id="section-7.1-3.3.1">Endpoints also reset the idle timer each time a QMux record is completely
+sent. Since acknowledgments are not directly visible to QMux endpoints, QMux
+does not reset the idle timer on acknowledgements. Instead, endpoints observe
+the side effect of acknowledgments: bytes drained from the send buffer,
+opening up space to send more.<a href="#section-7.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.1-3.4">
+            <p id="section-7.1-3.4.1">Activity on the underlying transport - such as acknowledgments, TCP keepalives, or TLS key updates - does not reset
+the idle timer.<a href="#section-7.1-3.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.1-3.5">
+            <p id="section-7.1-3.5.1">QMux endpoints do not increase their idle timeouts relative to the current
+Probe Timeout (PTO).<a href="#section-7.1-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-7.1-4">While idle, a QMux connection may also be disrupted by inactivity timers outside
+of QMux; e.g., a  Network Address Translator <span>[<a href="#RFC7857" class="cite xref">RFC7857</a>]</span> that discards its
+mapping. QX_PING frames can be used to elicit a peer response, which could keep
+inactivity timers at lower transport layers and intermediaries from causing
+premature connection termination.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="initiating-a-connection-close">
+<section id="section-7.2">
+        <h3 id="name-initiating-a-connection-clo">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-initiating-a-connection-clo" class="section-name selfRef">Initiating a Connection Close</a>
+        </h3>
+<p id="section-7.2-1">When the idle timeout expires, an endpoint gracefully shuts down its sending
+side of the underlying transport. The endpoint does not send any QMux frames, though
+it might send messages at lower layers, such as a TLS <code>close_notify</code> alert.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-2">Separately, as in QUIC version 1, an endpoint can initiate closing of a QMux
+connection by sending a CONNECTION_CLOSE frame and then gracefully shutting down
+its sending side of the underlying transport.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">In either case, after shutting down the sending side, the endpoint <span class="bcp14">SHOULD</span> wait
+for the peer to gracefully shut down the peer's sending side. The use of
+graceful shutdown mitigates the risk of undelivered records and frames
+becoming lost due to abrupt termination of the underlying transport. While
+waiting for the peer to gracefully shut down, QMux endpoints <span class="bcp14">SHOULD</span> discard any
+data they receive without processing it, similarly to QUIC version 1 endpoints
+discarding packets received during the draining period
+(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.2.2" class="relref">Section 10.2.2</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>).<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="responding-to-a-connection-close">
+<section id="section-7.3">
+        <h3 id="name-responding-to-a-connection-">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-responding-to-a-connection-" class="section-name selfRef">Responding to a Connection Close</a>
+        </h3>
+<p id="section-7.3-1">When receiving a CONNECTION_CLOSE frame or observing the peer shut down the
+peer's sending side, the receiving endpoint <span class="bcp14">SHOULD</span> gracefully shut down its
+sending side, either without sending any frames or after sending a single
+CONNECTION_CLOSE frame.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="handling-resets">
+<section id="section-7.4">
+        <h3 id="name-handling-resets">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-handling-resets" class="section-name selfRef">Handling Resets</a>
+        </h3>
+<p id="section-7.4-1">When the underlying transport becomes unavailable (e.g., due to a TCP reset or a
+TLS fatal alert), the QMux connection is terminated immediately.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="using-tls">
@@ -2000,9 +2099,38 @@ throughput.<a href="#section-11-3" class="pilcrow">¶</a></p>
       <h2 id="name-security-considerations">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-12-1">Failure to follow the forward-progress requirements in
+<p id="section-12-1">QMux inherits many of the security properties and considerations laid out in
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21" class="relref">Section 21</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>. This section describes considerations specific to QMux.<a href="#section-12-1" class="pilcrow">¶</a></p>
+<div id="forward-progress">
+<section id="section-12.1">
+        <h3 id="name-forward-progress">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-forward-progress" class="section-name selfRef">Forward Progress</a>
+        </h3>
+<p id="section-12.1-1">Failure to follow the forward-progress requirements in
 <a href="#forward-progress-flow-control" class="auto internal xref">Section 6</a> can lead to deadlock and can be exploited for
-resource-exhaustion attacks.<a href="#section-12-1" class="pilcrow">¶</a></p>
+resource-exhaustion attacks.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="denial-of-service">
+<section id="section-12.2">
+        <h3 id="name-denial-of-service">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-denial-of-service" class="section-name selfRef">Denial of Service</a>
+        </h3>
+<p id="section-12.2-1">As in QUIC (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.9" class="relref">Section 21.9</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>), valid QMux frames can be used to keep a
+connection alive, to consume processing resources disproportionate to useful
+progress, or to force an endpoint to generate responses. For example, sending
+large numbers of small records, PADDING frames, tiny flow control increments, or
+QX_PING frames can be used for such purposes. Implementations <span class="bcp14">SHOULD</span> monitor for
+such traffic patterns and <span class="bcp14">MAY</span> treat suspicious activity as a connection error.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
+<p id="section-12.2-2">Unlike QUIC, where each packet is a self-contained unit, QMux records can arrive
+incrementally over the underlying byte stream. Implementations need to consider
+resources they might use to hold partially received records.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
+<p id="section-12.2-3">Unlike QUIC, QMux does not provide protection against premature connection
+termination by unauthenticated on-path entities. An intermediary that can
+disrupt the underlying transport will be able to successfully terminate
+connections; see <a href="#handling-resets" class="auto internal xref">Section 7.4</a>.<a href="#section-12.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="iana-considerations">
@@ -2169,6 +2297,10 @@ registry.<a href="#section-13.2-1" class="pilcrow">¶</a></p>
 <dt id="QUIC-TLS">[QUIC-TLS]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9001">https://www.rfc-editor.org/rfc/rfc9001</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7857">[RFC7857]</dt>
+        <dd>
+<span class="refAuthor">Penno, R.</span>, <span class="refAuthor">Perreault, S.</span>, <span class="refAuthor">Boucadair, M., Ed.</span>, <span class="refAuthor">Sivakumar, S.</span>, and <span class="refAuthor">K. Naito</span>, <span class="refTitle">"Updates to Network Address Translation (NAT) Behavioral Requirements"</span>, <span class="seriesInfo">BCP 127</span>, <span class="seriesInfo">RFC 7857</span>, <span class="seriesInfo">DOI 10.17487/RFC7857</span>, <time datetime="2016-04" class="refDate">April 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7857">https://www.rfc-editor.org/rfc/rfc7857</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SVCB">[SVCB]</dt>
         <dd>
