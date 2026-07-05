@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 4 January 2027                                       Cloudflare
+Expires: 6 January 2027                                       Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                             3 July 2026
+                                                             5 July 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2027.
+   This Internet-Draft will expire on 6 January 2027.
 
 Copyright Notice
 
@@ -497,6 +497,12 @@ Table of Contents
    When receiving a QMux Record with a Frames field that exceeds the
    declared maximum, receivers MUST close the connection with an error
    of type FRAME_ENCODING_ERROR.
+
+   This document does not specify the use of the max_record_size
+   transport parameter with QUIC version 1.  Absent such a
+   specification, the max_record_size transport parameter is ignored by
+   QUIC version 1 endpoints as an unknown transport parameter, as
+   defined in (Section 7.4.2 of [QUIC]).
 
 6.  Forward Progress and Flow Control
 
