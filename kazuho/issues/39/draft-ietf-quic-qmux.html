@@ -1816,10 +1816,11 @@ the idle timer.<a href="#section-7.1-3.4.1" class="pilcrow">¶</a></p>
 Probe Timeout (PTO).<a href="#section-7.1-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-7.1-4">While idle, a QMux connection may also be torn down by timers outside of QMux;
-e.g., Network Address Translation <span>[<a href="#RFC7857" class="cite xref">RFC7857</a>]</span>. QX_PING frames can be used to
-elicit a peer response, which could keep inactivity timers at lower transport
-layers and intermediaries from causing premature connection termination.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+<p id="section-7.1-4">While idle, a QMux connection may also be disrupted by inactivity timers outside
+of QMux; e.g., a  Network Address Translator <span>[<a href="#RFC7857" class="cite xref">RFC7857</a>]</span> that discards its
+mapping. QX_PING frames can be used to elicit a peer response, which could keep
+inactivity timers at lower transport layers and intermediaries from causing
+premature connection termination.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="initiating-a-connection-close">
