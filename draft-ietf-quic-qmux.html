@@ -1224,6 +1224,9 @@ operations that applications rely upon in QUIC version 1.<a href="#section-abstr
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-unreliable-datagram-extensi" class="internal xref">Unreliable Datagram Extension</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-stream-resets-with-partial-" class="internal xref">Stream Resets with Partial Delivery Extension</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
@@ -1884,7 +1887,7 @@ to learn peer transport parameters on resumed connections.<a href="#section-8.2-
 define its mapping for QMux, or explicitly allow the use; see <a href="#permitted-tps" class="auto internal xref">Section 5.1</a>.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">As is the case with QUIC version 1, use of extension frames have to be
 negotiated before use; see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.21" class="relref">Section 19.21</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>.<a href="#section-9-2" class="pilcrow">¶</a></p>
-<p id="section-9-3">This specification defines the mapping of the Unreliable Datagram Extension.<a href="#section-9-3" class="pilcrow">¶</a></p>
+<p id="section-9-3">This specification defines the mapping of the following extensions.<a href="#section-9-3" class="pilcrow">¶</a></p>
 <div id="unreliable-datagram-extension">
 <section id="section-9.1">
         <h3 id="name-unreliable-datagram-extensi">
@@ -1896,6 +1899,21 @@ remain unchanged, and the use of the extension is negotiated via transport
 parameters.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">As discussed in <span><a href="https://rfc-editor.org/rfc/rfc9221#section-5" class="relref">Section 5</a> of [<a href="#QUIC_DATAGRAM" class="cite xref">QUIC_DATAGRAM</a>]</span>, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="stream-resets-with-partial-delivery-extension">
+<section id="section-9.2">
+        <h3 id="name-stream-resets-with-partial-">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-stream-resets-with-partial-" class="section-name selfRef">Stream Resets with Partial Delivery Extension</a>
+        </h3>
+<p id="section-9.2-1">The use of the Stream Resets with Partial Delivery Extension
+<span>[<a href="#RESET-STREAM-AT" class="cite xref">RESET-STREAM-AT</a>]</span> is permitted. The
+encoding and semantics of the RESET_STREAM_AT frame remain unchanged, and the
+use of the extension is negotiated via transport parameters.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">Because QMux runs on a reliable transport, all stream data is delivered to the
+receiving stack before the RESET_STREAM_AT frame. The Reliable Size indicates
+how much of that data the stack needs to deliver to the application before
+signaling the reset.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2094,6 +2112,10 @@ registry.<a href="#section-13.2-1" class="pilcrow">¶</a></p>
 <dt id="QUIC_DATAGRAM">[QUIC_DATAGRAM]</dt>
         <dd>
 <span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="seriesInfo">RFC 9221</span>, <span class="seriesInfo">DOI 10.17487/RFC9221</span>, <time datetime="2022-03" class="refDate">March 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9221">https://www.rfc-editor.org/rfc/rfc9221</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RESET-STREAM-AT">[RESET-STREAM-AT]</dt>
+        <dd>
+<span class="refAuthor">Seemann, M.</span> and <span class="refAuthor">K. Oku</span>, <span class="refTitle">"QUIC Stream Resets with Partial Delivery"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-reliable-stream-reset-09</span>, <time datetime="2026-07-04" class="refDate">4 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-09">https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
