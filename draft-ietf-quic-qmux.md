@@ -427,7 +427,7 @@ datagrams when they cannot be promptly delivered to the application.
 # Connection Termination
 
 A QMux connection can be terminated by an idle timeout, by a CONNECTION_CLOSE
-frame, or by observing a reset of the underlying transport.
+frame, or by observing a closure of the underlying transport.
 
 
 ## Idle Timeout
