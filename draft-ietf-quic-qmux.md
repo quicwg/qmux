@@ -455,10 +455,11 @@ As a consequence, the idle timeout of QMux is defined as follows:
 * QMux endpoints do not increase their idle timeouts relative to the current
   Probe Timeout (PTO).
 
-While idle, a QMux connection may also be disrupted by inactivity timers outside of QMux; e.g., a 
-Network Address Translator {{?RFC7857}} that discards its mapping. QX_PING frames can be used to
-elicit a peer response, which could keep inactivity timers at lower transport
-layers and intermediaries from causing premature connection termination.
+While idle, a QMux connection may also be disrupted by inactivity timers outside
+of QMux; e.g., a  Network Address Translator {{?RFC7857}} that discards its
+mapping. QX_PING frames can be used to elicit a peer response, which could keep
+inactivity timers at lower transport layers and intermediaries from causing
+premature connection termination.
 
 
 ## Initiating a Connection Close
