@@ -1736,51 +1736,62 @@ following transport parameters is allowed:<a href="#section-5.1-1" class="pilcro
 </li>
         </ul>
 <p id="section-5.1-3">The definitions of these transport parameters are unchanged.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">Use of all other transport parameters defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2" class="relref">Section 18.2</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>
-is prohibited, namely the following:<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">Although an endpoint could convey connection-level limits using MAX_DATA and
+MAX_STREAMS frames in its first flight, the initial flow-control transport
+parameters from QUIC version 1 are used. The
+<code>initial_max_stream_data_bidi_local</code>, <code>initial_max_stream_data_bidi_remote</code>,
+and <code>initial_max_stream_data_uni</code> parameters set the flow-control credit
+available on a stream as soon as it is opened, including streams opened
+later in the connection. Using these transport parameters also lets a
+client send 0-RTT data within remembered limits on a resumed connection,
+before the peer's frames are received (see <a href="#using-0rtt" class="auto internal xref">Section 8.2</a>), and preserves
+the flow-control model of QUIC version 1 so that existing implementations
+can be reused without modification.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-5">Use of all other transport parameters defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2" class="relref">Section 18.2</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>
+is prohibited, namely the following:<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.1-5.1">
-            <p id="section-5.1-5.1.1">original_destination_connection_id<a href="#section-5.1-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.1-6.1">
+            <p id="section-5.1-6.1.1">original_destination_connection_id<a href="#section-5.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.2">
-            <p id="section-5.1-5.2.1">stateless_reset_token<a href="#section-5.1-5.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.2">
+            <p id="section-5.1-6.2.1">stateless_reset_token<a href="#section-5.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.3">
-            <p id="section-5.1-5.3.1">max_udp_payload_size<a href="#section-5.1-5.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.3">
+            <p id="section-5.1-6.3.1">max_udp_payload_size<a href="#section-5.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.4">
-            <p id="section-5.1-5.4.1">ack_delay_exponent<a href="#section-5.1-5.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.4">
+            <p id="section-5.1-6.4.1">ack_delay_exponent<a href="#section-5.1-6.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.5">
-            <p id="section-5.1-5.5.1">max_ack_delay<a href="#section-5.1-5.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.5">
+            <p id="section-5.1-6.5.1">max_ack_delay<a href="#section-5.1-6.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.6">
-            <p id="section-5.1-5.6.1">disable_active_migration<a href="#section-5.1-5.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.6">
+            <p id="section-5.1-6.6.1">disable_active_migration<a href="#section-5.1-6.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.7">
-            <p id="section-5.1-5.7.1">preferred_address<a href="#section-5.1-5.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.7">
+            <p id="section-5.1-6.7.1">preferred_address<a href="#section-5.1-6.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.8">
-            <p id="section-5.1-5.8.1">active_connection_id_limit<a href="#section-5.1-5.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.8">
+            <p id="section-5.1-6.8.1">active_connection_id_limit<a href="#section-5.1-6.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.9">
-            <p id="section-5.1-5.9.1">initial_source_connection_id<a href="#section-5.1-5.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.9">
+            <p id="section-5.1-6.9.1">initial_source_connection_id<a href="#section-5.1-6.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-5.10">
-            <p id="section-5.1-5.10.1">retry_source_connection_id<a href="#section-5.1-5.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-6.10">
+            <p id="section-5.1-6.10.1">retry_source_connection_id<a href="#section-5.1-6.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.1-6">When an endpoint receives one of the prohibited transport parameters, the
+<p id="section-5.1-7">When an endpoint receives one of the prohibited transport parameters, the
 endpoint <span class="bcp14">MUST</span> close the connection with an error of type
-TRANSPORT_PARAMETER_ERROR.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1-7">QUIC defines a reserved range of transport parameters for the purpose of
+TRANSPORT_PARAMETER_ERROR.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<p id="section-5.1-8">QUIC defines a reserved range of transport parameters for the purpose of
 exercising a peer's ability to ignore unknown transport parameters
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.2" class="relref">Section 7.4.2</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>). The use of these transport parameters in QMux for
-the same purpose is allowed.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
-<p id="section-5.1-8">Endpoints <span class="bcp14">MUST NOT</span> send transport parameters defined outside of <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> unless
+the same purpose is allowed.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
+<p id="section-5.1-9">Endpoints <span class="bcp14">MUST NOT</span> send transport parameters defined outside of <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> unless
 they are specified to be usable with QMux. Similarly, endpoints <span class="bcp14">MUST</span> ignore
 transport parameters defined outside of <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> unless they are specified to be
-usable with QMux; see <a href="#extensions" class="auto internal xref">Section 9</a>.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
+usable with QMux; see <a href="#extensions" class="auto internal xref">Section 9</a>.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="max_record_size">
@@ -1960,7 +1971,7 @@ identifying the use of a specific QMux draft version in its specification.
 the use of QMux draft-05.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="using-0-rtt">
+<div id="using-0rtt">
 <section id="section-8.2">
         <h3 id="name-using-0-rtt">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-using-0-rtt" class="section-name selfRef">Using 0-RTT</a>
