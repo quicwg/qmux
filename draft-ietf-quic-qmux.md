@@ -512,10 +512,10 @@ As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.
 
 
-## Reliable Stream Reset Extension
+## Stream Resets with Partial Delivery Extension
 
-The use of the Reliable Stream Reset Extension
-{{!RELIABLE_RESET=I-D.ietf-quic-reliable-stream-reset}} is permitted. The
+The use of the Stream Resets with Partial Delivery Extension
+{{!RESET-STREAM-AT=I-D.ietf-quic-reliable-stream-reset}} is permitted. The
 encoding and semantics of the RESET_STREAM_AT frame remain unchanged, and the
 use of the extension is negotiated via transport parameters.
 
