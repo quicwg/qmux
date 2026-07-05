@@ -254,7 +254,7 @@ due to the underlying transport's guarantee of in-order delivery.
 
 When receiving a STREAM frame that carries a payload not immediately following
 the payload of the previous STREAM frame for the same Stream ID, receivers MUST
-close the connection with an error of type PROTOCOL_VIOLATION_ERROR.
+close the connection with an error of type PROTOCOL_VIOLATION.
 
 These changes do not impact the senders' capability to interleave STREAM frames
 from multiple streams.
@@ -311,7 +311,7 @@ The QX_TRANSPORT_PARAMETERS frame MUST only be sent as the first frame. If the
 first frame being received by an endpoint is not a QX_TRANSPORT_PARAMETERS
 frame, or if a QX_TRANSPORT_PARAMETERS frame is received other than as the first
 frame, the endpoint MUST close the connection with an error of type
-TRANSPORT_PARAMETER_ERROR.
+PROTOCOL_VIOLATION.
 
 The frame type (0x3f5153300d0a0d0a; "\xffQMX\r\n\r\n" on wire) has been chosen
 so that it can be used to disambiguate QMux from HTTP/1.1 {{?HTTP1=RFC9112}} and
@@ -343,8 +343,8 @@ Sequence Number:
 : A variable-length integer used to identify the ping.
 
 When sending QX_PING frames of type 0x348c67529ef8c7bd, endpoints MUST send
-monotonically increasing values in the Sequence Number field, since that allows
-the endpoints to identify to which ping the peer has responded.
+strictly increasing values in the Sequence Number field, since that allows the
+endpoints to identify to which ping the peer has responded.
 
 When sending QX_PING frames of type 0x348c67529ef8c7be in response, endpoints
 MUST echo the Sequence Number that they received.
@@ -354,6 +354,18 @@ the chance to respond, an endpoint MAY only respond with one QX_PING frame of
 type 0x348c67529ef8c7be carrying the largest Sequence Number that the endpoint
 has received.
 
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7be with a
+sequence number greater than the greatest sequence number that it sent in a
+QX_PING frame of type 0x348c67529ef8c7bd, the endpoint MUST close the connection
+with an error of type PROTOCOL_VIOLATION. Similarly, an endpoint MAY detect a
+sequence number that it did not send and close the connection with the same
+error.
+
+If an endpoint receives a QX_PING frame of type 0x348c67529ef8c7bd with a
+sequence number less than or equal to the previous sequence number received in a frame
+of the same type, the endpoint MUST close the connection with an error of type
+PROTOCOL_VIOLATION.
+
 
 # Transport Parameters
 
@@ -362,7 +374,8 @@ new transport parameter specific to QMux is defined.
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
-In QMux, use of the following transport parameters is allowed.
+Among the transport parameters defined in {{Section 18.2 of QUIC}}, use of the
+following transport parameters is allowed:
 
 * max_idle_timeout
 * initial_max_data
@@ -372,7 +385,7 @@ In QMux, use of the following transport parameters is allowed.
 * initial_max_streams_bidi
 * initial_max_streams_uni
 
-The definition of these transport parameters are unchanged.
+The definitions of these transport parameters are unchanged.
 
 Although an endpoint could convey connection-level limits using MAX_DATA and
 MAX_STREAMS frames in its first flight, the initial flow-control transport
@@ -386,15 +399,33 @@ before the peer's frames are received (see {{using-0rtt}}), and preserves
 the flow-control model of QUIC version 1 so that existing implementations
 can be reused without modification.
 
-Use of other transport parameters defined in QUIC version 1 is prohibited. When
-an endpoint receives one of the prohibited transport parameters, the endpoint
-MUST close the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+Use of all other transport parameters defined in {{Section 18.2 of QUIC}}
+is prohibited, namely the following:
 
-Endpoints MUST NOT send transport parameters that extend QUIC version 1, unless
-they are specified to be compatible with QMux.
+* original_destination_connection_id
+* stateless_reset_token
+* max_udp_payload_size
+* ack_delay_exponent
+* max_ack_delay
+* disable_active_migration
+* preferred_address
+* active_connection_id_limit
+* initial_source_connection_id
+* retry_source_connection_id
 
-When receiving transport parameters not defined in QUIC version 1, receivers
-MUST ignore them unless they are specified to be usable on QMux.
+When an endpoint receives one of the prohibited transport parameters, the
+endpoint MUST close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.
+
+QUIC defines a reserved range of transport parameters for the purpose of
+exercising a peer's ability to ignore unknown transport parameters
+({{Section 7.4.2 of QUIC}}). The use of these transport parameters in QMux for
+the same purpose is allowed.
+
+Endpoints MUST NOT send transport parameters defined outside of {{QUIC}} unless
+they are specified to be usable with QMux. Similarly, endpoints MUST ignore
+transport parameters defined outside of {{QUIC}} unless they are specified to be
+usable with QMux; see {{extensions}}.
 
 
 ## max_record_size Transport Parameter {#max_record_size}
@@ -421,6 +452,11 @@ When receiving a QMux Record with a Frames field that exceeds the declared
 maximum, receivers MUST close the connection with an error of type
 FRAME_ENCODING_ERROR.
 
+This document does not specify the use of the `max_record_size` transport
+parameter with QUIC version 1. Absent such a specification, the
+`max_record_size` transport parameter is ignored by QUIC version 1 endpoints as
+an unknown transport parameter, as defined in ({{Section 7.4.2 of QUIC}}).
+
 
 # Forward Progress and Flow Control {#forward-progress-flow-control}
 
@@ -438,20 +474,76 @@ amount of stream data a peer can send is limited by flow control
 datagrams when they cannot be promptly delivered to the application.
 
 
-# Closing the Connection
+# Connection Termination
 
-As is with QUIC version 1, a connection can be closed either by a
-CONNECTION_CLOSE frame or by an idle timeout.
+A QMux connection can be terminated by an idle timeout, by a CONNECTION_CLOSE
+frame, or by observing a closure of the underlying transport.
 
-Unlike QUIC version 1, idle timeout handling does not rely on ACK frames.
-Endpoints reset the idle timer when sending or receiving QMux frames. When no
-other traffic is available, QX_PING frames can be used to elicit a peer
-response and keep the connection active.
 
-Unlike QUIC version 1, there is no draining period; once an endpoint sends or
-receives the CONNECTION_CLOSE frame or reaches the idle timeout, all the
-resources allocated for the Service are freed and the underlying transport is
-closed immediately.
+## Idle Timeout
+
+In QUIC version 1, the idle timer is reset whenever a packet is received and
+processed successfully, including acknowledgment-only packets. It also raises
+the idle timeout using PTO, a value derived from when acknowledgments are
+received. QMux cannot adopt this approach as-is since acknowledgments are not
+processed by QMux stacks; they are processed by the underlying transport
+instead.
+
+As a consequence, the idle timeout of QMux is defined as follows:
+
+* As in QUIC version 1, endpoints negotiate an idle timeout using the
+  max_idle_timeout transport parameter.
+* As in QUIC version 1, endpoints reset the idle timer each time a QMux record
+  is completely received.
+* Endpoints also reset the idle timer each time a QMux record is completely
+  sent. Since acknowledgments are not directly visible to QMux endpoints, QMux
+  does not reset the idle timer on acknowledgements. Instead, endpoints observe
+  the side effect of acknowledgments: bytes drained from the send buffer,
+  opening up space to send more.
+* Activity on the underlying transport - such as acknowledgments, TCP keepalives, or TLS key updates - does not reset
+  the idle timer.
+* QMux endpoints do not increase their idle timeouts relative to the current
+  Probe Timeout (PTO).
+
+While idle, a QMux connection may also be disrupted by inactivity timers outside
+of QMux; e.g., a  Network Address Translator {{?RFC7857}} that discards its
+mapping. QX_PING frames can be used to elicit a peer response, which could keep
+inactivity timers at lower transport layers and intermediaries from causing
+premature connection termination.
+
+
+## Initiating a Connection Close
+
+When the idle timeout expires, an endpoint gracefully shuts down its sending
+side of the underlying transport. The endpoint does not send any QMux frames, though
+it might send messages at lower layers, such as a TLS `close_notify` alert.
+
+Separately, as in QUIC version 1, an endpoint can initiate closing of a QMux
+connection by sending a CONNECTION_CLOSE frame and then gracefully shutting down
+its sending side of the underlying transport.
+
+In either case, after shutting down the sending side, the endpoint SHOULD wait
+for the peer to gracefully shut down the peer's sending side. The use of
+graceful shutdown mitigates the risk of undelivered records and frames
+becoming lost due to abrupt termination of the underlying transport. While
+waiting for the peer to gracefully shut down, QMux endpoints SHOULD discard any
+data they receive without processing it, similarly to QUIC version 1 endpoints
+discarding packets received during the draining period
+({{Section 10.2.2 of QUIC}}).
+
+
+## Responding to a Connection Close
+
+When receiving a CONNECTION_CLOSE frame or observing the peer shut down the
+peer's sending side, the receiving endpoint SHOULD gracefully shut down its
+sending side, either without sending any frames or after sending a single
+CONNECTION_CLOSE frame.
+
+
+## Handling Resets {#handling-resets}
+
+When the underlying transport becomes unavailable (e.g., due to a TCP reset or a
+TLS fatal alert), the QMux connection is terminated immediately.
 
 
 # Using TLS
@@ -512,7 +604,7 @@ define its mapping for QMux, or explicitly allow the use; see {{permitted-tps}}.
 As is the case with QUIC version 1, use of extension frames have to be
 negotiated before use; see {{Section 19.21 of QUIC}}.
 
-This specification defines the mapping of the Unreliable Datagram Extension.
+This specification defines the mapping of the following extensions.
 
 
 ## Unreliable Datagram Extension
@@ -524,6 +616,19 @@ parameters.
 
 As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.
+
+
+## Stream Resets with Partial Delivery Extension
+
+The use of the Stream Resets with Partial Delivery Extension
+{{!RESET-STREAM-AT=I-D.ietf-quic-reliable-stream-reset}} is permitted. The
+encoding and semantics of the RESET_STREAM_AT frame remain unchanged, and the
+use of the extension is negotiated via transport parameters.
+
+Because QMux runs on a reliable transport, all stream data is delivered to the
+receiving stack before the RESET_STREAM_AT frame. The Reliable Size indicates
+how much of that data the stack needs to deliver to the application before
+signaling the reset.
 
 
 # Version Agility
@@ -603,9 +708,34 @@ throughput.
 
 # Security Considerations
 
+QMux inherits many of the security properties and considerations laid out in
+{{Section 21 of QUIC}}. This section describes considerations specific to QMux.
+
+
+## Forward Progress
+
 Failure to follow the forward-progress requirements in
 {{forward-progress-flow-control}} can lead to deadlock and can be exploited for
 resource-exhaustion attacks.
+
+
+## Denial of Service
+
+As in QUIC ({{Section 21.9 of QUIC}}), valid QMux frames can be used to keep a
+connection alive, to consume processing resources disproportionate to useful
+progress, or to force an endpoint to generate responses. For example, sending
+large numbers of small records, PADDING frames, tiny flow control increments, or
+QX_PING frames can be used for such purposes. Implementations SHOULD monitor for
+such traffic patterns and MAY treat suspicious activity as a connection error.
+
+Unlike QUIC, where each packet is a self-contained unit, QMux records can arrive
+incrementally over the underlying byte stream. Implementations need to consider
+resources they might use to hold partially received records.
+
+Unlike QUIC, QMux does not provide protection against premature connection
+termination by unauthenticated on-path entities. An intermediary that can
+disrupt the underlying transport will be able to successfully terminate
+connections; see {{handling-resets}}.
 
 
 # IANA Considerations
