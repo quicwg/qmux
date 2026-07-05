@@ -359,8 +359,9 @@ has received.
 
 As in QUIC, QMux exchanges transport parameters following the rules established
 in {{Section 7.4 of QUIC}}, with the modifications described in the subsections
-below. The container for carrying transport parameters is also different; see
-{{qx-tp-frames}}.
+below. Transport parameters are also carried differently, in a frame rather than
+a TLS extension; see {{qx-tp-frames}}.
+
 
 ## Permitted and Forbidden Transport Parameters {#permitted-tps}
 
