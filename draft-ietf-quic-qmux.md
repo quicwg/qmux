@@ -79,6 +79,56 @@ The specified polyfill provides a compatibility layer for the set of operations
 QUIC}}.
 
 
+## Trade-offs Between QMux and QUIC Version 1 {#trade-offs}
+
+QMux runs QUIC's stream and datagram operations over a single ordered, reliable
+byte stream. This leads to the following differences from QUIC version 1, which
+applications need to account for when choosing between the two.
+
+Head-of-line blocking:
+
+: In QUIC, streams are delivered independently ({{Section 2 of QUIC}}), so
+  loss affecting one stream does not delay the delivery of others. Any
+  head-of-line blocking is confined to the individual stream that lost data,
+  rather than affecting the whole connection. QMux carries all streams and
+  datagrams over a single ordered byte stream and cannot provide this
+  isolation. The loss of one segment on that transport delays every byte
+  behind it, so a single loss can stall all QMux streams, datagrams, and
+  control frames until the transport repairs the loss.
+
+No unreliable datagram delivery:
+
+: In QUIC, DATAGRAM frames {{QUIC_DATAGRAM}} are delivered unreliably. They
+  can be reordered or dropped, and they are never retransmitted. In QMux, a
+  DATAGRAM frame written to the underlying transport is delivered reliably
+  and in order, like any other data, and is subject to the same
+  head-of-line blocking. A sender can still choose not to send a datagram,
+  but a datagram cannot be dropped once sent. Applications that rely on
+  QUIC's unreliable datagram semantics need to account for this difference.
+
+No connection migration or multipath:
+
+: A QMux connection is tied to the connection of the underlying transport,
+  such as a TCP four-tuple. Unlike QUIC, it cannot migrate to a new path or
+  survive a change in the client's address ({{Section 9 of QUIC}}).
+
+Connection establishment latency:
+
+: QMux uses the underlying transport for connection establishment rather
+  than QUIC's combined transport and cryptographic handshake. Establishment
+  latency is therefore bounded by that of the underlying transport, for
+  example a TCP handshake followed by a TLS handshake. Early data on
+  resumption is limited to what the underlying transport offers, such as
+  TLS 1.3 0-RTT.
+
+Dependence on the underlying transport:
+
+: QMux provides no confidentiality, integrity, or peer authentication of
+  its own, and relies on the underlying transport for these properties and
+  for application protocol negotiation (see {{transport-properties}} and
+  {{negotiation}}).
+
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
