@@ -511,18 +511,15 @@ parameters.
 As discussed in {{Section 5 of QUIC_DATAGRAM}}, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.
 
-The largest DATAGRAM frame an endpoint can send is constrained by two
-limits. First, as in QUIC version 1, it is bounded by the peer's
+The largest DATAGRAM frame an endpoint can send is constrained by two limits.
+First, as in QUIC version 1, it is bounded by the peer's
 `max_datagram_frame_size` transport parameter. Second, it is bounded by the
-size of the container that carries the frame. In QUIC version 1 that
-container is the packet, so the bound is the maximum packet size
-({{Section 12.4 of QUIC}}). Like any other frame, a DATAGRAM frame
-MUST fit within a single QMux Record ({{records}}). In QMux, the bound is
-instead the peer's `max_record_size` transport parameter
+size of the container that carries the frame: in QUIC version 1 that container
+is the packet ({{Section 12.4 of QUIC}}), whereas in QMux it is the QMux
+Record, so the bound is the peer's `max_record_size` transport parameter
 ({{max_record_size}}). Where {{Section 3 of QUIC_DATAGRAM}} recommends
-advertising a `max_datagram_frame_size` of 65535 to accept any DATAGRAM
-frame that fits within a packet, the corresponding limit in QMux is
-`max_record_size`.
+advertising a `max_datagram_frame_size` of 65535 to accept any DATAGRAM frame
+that fits within a packet, the corresponding limit in QMux is `max_record_size`.
 
 Because these limits apply to the entire DATAGRAM frame rather than to its
 payload, the usable datagram payload is smaller than `max_record_size`. It
