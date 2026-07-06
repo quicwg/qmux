@@ -258,6 +258,12 @@ meaning and requirements for the use of these frames are consistent with QUIC
 version 1, with the exception to the specific changes made to the STREAM frames,
 as detailed in {{stream-frames}}.
 
+QMux keeps the QUIC version 1 frame formats even where the ordered transport
+makes a field redundant, such as the Offset field of STREAM frames. This lets
+an implementation reuse a QUIC version 1 stack with minimal changes, and
+removing such fields would provide minimal benefit while increasing the
+divergence between QMux and QUIC version 1 implementations.
+
 Use of other frames defined in QUIC version 1 is prohibited for various reasons.
 
 Frames related to the cryptographic handshake are not used because an underlying
