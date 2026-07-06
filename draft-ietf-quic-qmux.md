@@ -858,3 +858,33 @@ registry.
 {:numbered="false"}
 
 TODO acknowledge.
+
+# Change Log
+{:numbered="false"}
+
+> **Note to the RFC Editor / Editors:** Delete this section before publication.
+
+## Since draft-ietf-quic-qmux-01
+{:numbered="false"}
+
+- `max_record_size` reframed with a default value; QMux-only, ignored by QUIC version 1 (#50, #54).
+- QX_TRANSPORT_PARAMETERS frame misuse signaled with PROTOCOL_VIOLATION (#51).
+- QX_PING Sequence Numbers now strictly increasing; invalid values defined (#52).
+- Transport parameters follow RFC 9000 unless explicitly overridden (#53, #56).
+- Expanded connection termination and CONNECTION_CLOSE handling (#57).
+- Allowed use of the RESET_STREAM_AT frame (#58).
+- Documented downsides compared to QUIC version 1 (#61).
+- Clarified effective DATAGRAM frame size (#62).
+- Explained why initial flow-control transport parameters are retained (#63).
+- Explained why most QUIC version 1 frame formats are unchanged (#64).
+
+## Since draft-ietf-quic-qmux-00
+{:numbered="false"}
+
+- Frames are implicitly acknowledged by the underlying transport (#23).
+- Adopted length-delimited QMux Records (#26).
+- Added forward-progress requirements for flow control (#27).
+- Clarified transport parameter timing and 0-RTT text (#28).
+- Endpoints MUST use ALPN for application-protocol negotiation (#33).
+- Renamed `max_frame_size` to `max_record_size` and updated codepoints (#38).
+- QX_TRANSPORT_PARAMETERS is sent once, only as the first frame (#44).
