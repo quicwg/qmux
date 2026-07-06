@@ -1644,7 +1644,7 @@ close the connection with an error of type PROTOCOL_VIOLATION.<a href="#section-
 from multiple streams.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="qxtransportparameters-frames">
+<div id="qx-tp-frames">
 <section id="section-4.2">
         <h3 id="name-qx_transport_parameters-fra">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-qx_transport_parameters-fra" class="section-name selfRef">QX_TRANSPORT_PARAMETERS Frames</a>
@@ -1768,8 +1768,10 @@ PROTOCOL_VIOLATION.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
       <h2 id="name-transport-parameters">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-transport-parameters" class="section-name selfRef">Transport Parameters</a>
       </h2>
-<p id="section-5-1">QMux uses a subset of transport parameters defined in QUIC version 1. Also, one
-new transport parameter specific to QMux is defined.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">As in QUIC, QMux exchanges transport parameters following the rules established
+in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>, with the modifications described in the subsections
+below. Transport parameters are also carried differently, in a frame rather than
+a TLS extension; see <a href="#qx-tp-frames" class="auto internal xref">Section 4.2</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="permitted-tps">
 <section id="section-5.1">
         <h3 id="name-permitted-and-forbidden-tra">

@@ -503,8 +503,11 @@ Table of Contents
 
 5.  Transport Parameters
 
-   QMux uses a subset of transport parameters defined in QUIC version 1.
-   Also, one new transport parameter specific to QMux is defined.
+   As in QUIC, QMux exchanges transport parameters following the rules
+   established in Section 7.4 of [QUIC], with the modifications
+   described in the subsections below.  Transport parameters are also
+   carried differently, in a frame rather than a TLS extension; see
+   Section 4.2.
 
 5.1.  Permitted and Forbidden Transport Parameters
 
