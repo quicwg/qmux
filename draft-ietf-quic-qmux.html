@@ -2074,6 +2074,23 @@ remain unchanged, and the use of the extension is negotiated via transport
 parameters.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">As discussed in <span><a href="https://rfc-editor.org/rfc/rfc9221#section-5" class="relref">Section 5</a> of [<a href="#QUIC_DATAGRAM" class="cite xref">QUIC_DATAGRAM</a>]</span>, senders can drop DATAGRAM frames
 if the transport is blocked by flow or congestion control.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.1-3">The largest DATAGRAM frame an endpoint can send is constrained by two limits.
+First, as in QUIC version 1, it is bounded by the peer's
+<code>max_datagram_frame_size</code> transport parameter. Second, it is bounded by the
+size of the container that carries the frame: in QUIC version 1 that container
+is the packet (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-12.4" class="relref">Section 12.4</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>), whereas in QMux it is the QMux
+Record, so the bound is the peer's <code>max_record_size</code> transport parameter
+(<a href="#max_record_size" class="auto internal xref">Section 5.2</a>). Where <span><a href="https://rfc-editor.org/rfc/rfc9221#section-3" class="relref">Section 3</a> of [<a href="#QUIC_DATAGRAM" class="cite xref">QUIC_DATAGRAM</a>]</span> recommends
+advertising a <code>max_datagram_frame_size</code> of 65535 to accept any DATAGRAM frame
+that fits within a packet, the corresponding limit in QMux is <code>max_record_size</code>.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-4">Because these limits apply to the entire DATAGRAM frame rather than to its
+payload, the usable datagram payload is smaller than <code>max_record_size</code>. It
+excludes the frame's Type field, Length field when present, and any
+bytes used by other frames sharing the record. For example, with the
+default <code>max_record_size</code> of 16382, a DATAGRAM frame that is the only frame
+in a record and omits its Length field (using the record boundary as the end
+of the datagram, see <a href="#records" class="auto internal xref">Section 3.2</a>) can carry a payload of up to 16381 bytes:
+the maximum record size of 16382, reduced by the one-byte frame Type.<a href="#section-9.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="stream-resets-with-partial-delivery-extension">
