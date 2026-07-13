@@ -287,7 +287,7 @@ The full list of prohibited frames is:
 * NEW_CONNECTION_ID
 * RETIRE_CONNECTION_ID
 * PATH_CHALLENGE
-* PATH_REPONSE
+* PATH_RESPONSE
 * HANDSHAKE_DONE
 
 Endpoints MUST NOT send prohibited frames. If an endpoint receives one it MUST
