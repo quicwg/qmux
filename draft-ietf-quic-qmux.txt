@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 7 January 2027                                       Cloudflare
+Expires: 14 January 2027                                      Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                             6 July 2026
+                                                            13 July 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2027.
+   This Internet-Draft will expire on 14 January 2027.
 
 Copyright Notice
 
@@ -378,7 +378,7 @@ Table of Contents
 
    *  PATH_CHALLENGE
 
-   *  PATH_REPONSE
+   *  PATH_RESPONSE
 
    *  HANDSHAKE_DONE
 
@@ -1073,22 +1073,22 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
    [UDP]      Postel, J., "User Datagram Protocol", STD 6, RFC 768,
-              DOI 10.17487/RFC0768, August 1980,
+              DOI 10.17487/RFC768, August 1980,
               <https://www.rfc-editor.org/rfc/rfc768>.
 
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
               Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
-              in Progress, Internet-Draft, draft-ietf-webtrans-http2-14,
-              2 March 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-webtrans-http2-14>.
+              in Progress, Internet-Draft, draft-ietf-webtrans-http2-15,
+              6 July 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-webtrans-http2-15>.
 
    [webtrans-h3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-15, 2 March 2026,
+              ietf-webtrans-http3-16, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-15>.
+              webtrans-http3-16>.
 
 Acknowledgments
 
