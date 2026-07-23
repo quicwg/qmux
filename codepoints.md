@@ -61,6 +61,7 @@ Each row records how its codepoint was selected:
 | QX_PING (request) | 0xTBD | draft-ietf-quic-qmux-00 | Manual Selection |
 | QX_PING (response) | 0x348c67529ef8c7be | draft-ietf-quic-qmux-01 | (consecutive with above) |
 | QX_PING (response) | 0xTBD+1 | draft-ietf-quic-qmux-00 | Manual Selection |
+| QX_TRANSPORT_PARAMETERS | 0x3f514d580d0a0d0a | draft-ietf-quic-qmux-03 | Magic Value |
 | QX_TRANSPORT_PARAMETERS | 0x3f5153300d0a0d0a | draft-ietf-quic-qmux-01 | Magic Value |
 | QX_TRANSPORT_PARAMETERS | 0x3f5153300d0a0d0a | draft-ietf-quic-qmux-00 | Magic Value |
 

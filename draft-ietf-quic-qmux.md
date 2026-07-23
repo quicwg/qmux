@@ -325,7 +325,7 @@ QX_TRANSPORT_PARAMETERS frames are formatted as shown in
 
 ~~~
 QX_TRANSPORT_PARAMETERS Frame {
-  Type (i) = 0x3f5153300d0a0d0a,
+  Type (i) = 0x3f514d580d0a0d0a,
   Length (i),
   Transport Parameters (..),
 }
@@ -369,7 +369,7 @@ frame, or if a QX_TRANSPORT_PARAMETERS frame is received other than as the first
 frame, the endpoint MUST close the connection with an error of type
 PROTOCOL_VIOLATION.
 
-The frame type (0x3f5153300d0a0d0a; "\xffQMX\r\n\r\n" on wire) has been chosen
+The frame type (0x3f514d580d0a0d0a; "\xffQMX\r\n\r\n" on wire) has been chosen
 so that it can be used to disambiguate QMux from HTTP/1.1 {{?HTTP1=RFC9112}} and
 HTTP/2.
 
@@ -836,10 +836,10 @@ registry.
 
 | Value | Frame Type Name | Status | Specification |
 |---|---|---|---|
-| 0x3f5153300d0a0d0a | QX_TRANSPORT_PARAMETERS | provisional | {{fig-qx-transport-parameters}} |
+| 0x3f514d580d0a0d0a | QX_TRANSPORT_PARAMETERS | provisional | {{fig-qx-transport-parameters}} |
 | 0x348c67529ef8c7bd - 0x348c67529ef8c7be | QX_PING | provisional | {{fig-qx-ping}} |
 
-The value 0x3f5153300d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen deliberately
+The value 0x3f514d580d0a0d0a for QX_TRANSPORT_PARAMETERS was chosen deliberately
 to function as a protocol magic number see ({{fig-qx-transport-parameters}}).
 
 ## QUIC Transport Parameters
@@ -863,6 +863,11 @@ TODO acknowledge.
 {:numbered="false"}
 
 > **Note to the RFC Editor / Editors:** Delete this section before publication.
+
+## Since draft-ietf-quic-qmux-02
+{:numbered="false"}
+
+- Changed the QX_TRANSPORT_PARAMETERS magic number to 0x3f514d580d0a0d0a so its on-wire bytes spell "\xffQMX\r\n\r\n" as intended and matching the existing description. The previous value 0x3f5153300d0a0d0a encoded "\xffQS0\r\n\r\n", a leftover from the QUIC on Streams naming. This is a breaking wire-format change.
 
 ## Since draft-ietf-quic-qmux-01
 {:numbered="false"}
