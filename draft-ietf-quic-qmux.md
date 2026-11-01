@@ -586,8 +586,8 @@ for the peer to gracefully shut down the peer's sending side. The use of
 graceful shutdown mitigates the risk of undelivered records and frames
 becoming lost due to abrupt termination of the underlying transport. While
 waiting for the peer to gracefully shut down, QMux endpoints SHOULD discard any
-data they receive without processing it, similarly to QUIC version 1 endpoints
-discarding packets received during the draining period
+application data they receive without processing it, similarly to QUIC 
+version 1 endpoints discarding packets received during the draining period
 ({{Section 10.2.2 of QUIC}}).
 
 
