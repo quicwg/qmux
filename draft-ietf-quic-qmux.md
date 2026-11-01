@@ -570,8 +570,24 @@ mapping. QX_PING frames can be used to elicit a peer response, which could keep
 inactivity timers at lower transport layers and intermediaries from causing
 premature connection termination.
 
+When the idle timeout expires, an endpoint initiates a connection close
+({{initiate-close}}), or as an alternative, MAY discard the underlying
+connection silently without sending a FIN, a RST, or any TLS records, if all of
+the following conditions are met:
 
-## Initiating a Connection Close
+* The idle timeout is long enough that all data previously sent by either peer
+  can be reasonably assumed to have been delivered to the QMux stack on the
+  other side.
+* The application protocol is resilient to truncation caused by abrupt
+  termination of the underlying connection.
+
+By discarding the connection silently, endpoints avoid waking up the radio and
+conserve energy, though if an endpoint receives a packet after discarding the
+connection and responds with a RST, the peer might lose data inside its TCP
+receive buffer. The two conditions are mitigations for this downside.
+
+
+## Initiating a Connection Close {#initiate-close}
 
 When the idle timeout expires, an endpoint gracefully shuts down its sending
 side of the underlying transport. The endpoint does not send any QMux frames, though
