@@ -12,7 +12,7 @@ author:
     organization: Fastly
     email: kazuhooku@gmail.com
  -  fullname: Lucas Pardue
-    organization: Cloudflare
+    organization: Apple
     email: lucas@lucaspardue.com
  -  fullname: Jana Iyengar
     organization: Netflix
