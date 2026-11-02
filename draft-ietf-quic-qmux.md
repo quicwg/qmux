@@ -636,9 +636,9 @@ TO BE REMOVED BEFORE PUBLICATION: During the development of QMux, its wire
 format might change. Therefore, when testing interoperability of application
 protocols using a draft version of QMux, applications should specify, for each
 ALPN identifier they define, which draft version of QMux is used. As an example,
-an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP and QMux,
-identifying the use of a specific QMux draft version in its specification.
-the use of QMux draft-05.
+an ALPN identifier "myapp-12qx" could identify version 12 of "myapp" over TCP
+and QMux, identifying the use of a specific QMux draft version in its
+specification.
 
 
 ## Using 0-RTT {#using-0rtt}
@@ -744,13 +744,14 @@ Similarly, when TLS is the underlying transport, application protocols built on
 top of the QMux counterparts of such QUIC versions can rely on ALPN to negotiate
 both the application protocol and the underlying QMux version ({{negotiation}}).
 
-When TLS is not the underlying transport, endpoints can use the first 8 bytes
-exchanged on the transport (i.e., the type field of the
-QX_TRANSPORT_PARAMETERS frame in the encoded form) to identify whether QMux is
-in use.
+When TLS is not the underlying transport, endpoints can use the encoded type
+field of the QX_TRANSPORT_PARAMETERS frame ({{qx-tp-frames}}) to identify
+whether QMux is in use. These 8 bytes immediately follow the Size field of the
+first QMux Record ({{records}}). Because the Size field is a variable-length
+integer, they begin 1, 2, 4, or 8 bytes from the start of the stream.
 
-[TODO: discuss how endpoints should behave when the first 8 bytes received are
-not QX_TRANSPORT_PARAMETERS.]
+[TODO: discuss how endpoints should behave when the bytes received do not
+identify QMux in this way.]
 
 
 ## In-band Upgrade
