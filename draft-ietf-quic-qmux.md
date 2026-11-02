@@ -45,7 +45,7 @@ loss recovery.
 However, there are downsides to QUIC.
 
 One downside is that QUIC, being based on UDP, is not as universally accessible
-as TCP {{?TCP=RFC9293}}, due to occasionally being blocked by middleboxes.
+as TCP {{!TCP=RFC9293}}, due to occasionally being blocked by middleboxes.
 
 Another downside is that QUIC is computationally more expensive compared to TLS
 {{!TLS13=RFC8446}} over TCP. This increased cost is partly because QUIC encrypts
@@ -72,7 +72,8 @@ HTTP variants ({{?webtrans-h3=I-D.ietf-webtrans-http3}},
 To reduce or eliminate the costs associated with duplicated efforts in providing
 services on top of both transport protocols, this document specifies a polyfill
 that allows application protocols built on QUIC to run on transport protocols
-that provide single bi-directional, byte-oriented stream such as TCP or TLS.
+that provide a single bi-directional, byte-oriented stream, such as TLS over
+TCP.
 
 The specified polyfill provides a compatibility layer for the set of operations
 (i.e., API) required by QUIC, as specified in {{Section 2.4 and Section 5.3 of
@@ -136,8 +137,11 @@ Dependence on the underlying transport:
 
 # The Protocol
 
-QMux can be used on any transport that provides a bi-directional, byte-oriented
-stream that is ordered and reliable; for details, see {{transport-properties}}.
+This document defines QMux over TLS {{TLS13}} over TCP {{TCP}}. QMux can also
+be used on other transports that provide a bi-directional, byte-oriented stream
+that is ordered and reliable, along with the other capabilities described in
+{{transport-properties}}, but this document does not specify their use; see
+{{other-transports}}.
 
 QMux transfers one or more QUIC frames within a QMux record; see {{records}}.
 Neither QUIC frames nor QMux records are encrypted in this protocol; it is the
@@ -186,13 +190,9 @@ Application Protocol Negotiation:
   used between endpoints that have out-of-band agreement on those protocols.
 
 TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
-(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities.
-
-UNIX sockets are an example that provide in-order and guaranteed delivery only.
-Congestion control is not employed, as UNIX sockets do not face a shared
-bottleneck. Confidentiality and integrity protection are deemed unnecessary in
-environments where the operating system is trusted. Agreement on the application
-protocol can be achieved by using different listening sockets.
+(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities. Other underlying
+transports can be used if they provide equivalent capabilities; see
+{{other-transports}}.
 
 
 ## QMux Records {#records}
@@ -853,6 +853,29 @@ registry.
 
 
 --- back
+
+# Other Underlying Transports {#other-transports}
+
+An underlying transport other than TLS over TCP is not defined in this
+document. QMux can be used over any underlying transport that provides the
+capabilities described in {{transport-properties}}, and such a transport can
+be specified separately. A specification for such a transport needs to
+describe how each capability is provided, especially how endpoints
+authenticate each other and agree on the application protocol.
+
+Without ALPN, application protocols that use QMux over such transports cannot
+be discovered using SVCB records {{SVCB}}, which identify application
+protocols by their ALPN identifiers.
+
+UNIX sockets, for example, provide in-order and guaranteed delivery. Congestion
+control is not needed, as UNIX sockets do not share a bottleneck. Peer
+authentication, confidentiality, and integrity protection come from the
+operating system's process isolation and access controls rather than from a
+security protocol, and endpoints agree on the application protocol out of
+band, such as by using a different listening socket for each protocol. Note
+that this description of UNIX sockets is illustrative, not a complete
+specification.
+
 
 # Acknowledgments
 {:numbered="false"}
