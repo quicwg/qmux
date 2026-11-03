@@ -135,7 +135,7 @@ Dependence on the underlying transport:
 {::boilerplate bcp14-tagged}
 
 
-# The Protocol
+# Protocol Overview
 
 This document defines QMux over TLS {{TLS13}} over TCP {{TCP}}. QMux can also
 be used on other transports that provide a bi-directional, byte-oriented stream
@@ -143,59 +143,25 @@ that is ordered and reliable, along with the other capabilities described in
 {{transport-properties}}, but this document does not specify their use; see
 {{other-transports}}.
 
-QMux transfers one or more QUIC frames within a QMux record; see {{records}}.
-Neither QUIC frames nor QMux records are encrypted in this protocol; it is the
-task of the transport (e.g., TLS) to provide confidentiality and integrity.
+QMux is not an application protocol. Separate documents specify how an
+application protocol is mapped to QMux.
+
+Endpoints negotiate the use of an application protocol over QMux in the TLS
+handshake, using ALPN; see {{negotiation}}. Unlike QUIC version 1, QMux
+transport parameters are not exchanged in TLS. A new
+QX_TRANSPORT_PARAMETERS frame is defined for this purpose; see {{tps}}.
+
+Once negotiated, QMux transfers one or more QUIC frames within a QMux record; see
+{{records}}. Neither QUIC frames nor QMux records are encrypted in this
+protocol; TLS provides confidentiality and integrity.
 
 QUIC packet headers are not used.
 
-For exchanging the transport parameters, a new frame called
-QX_TRANSPORT_PARAMETERS frame is defined.
+QMux connections are terminated as described in {{termination}}. TLS session
+resumption is supported, including 0-RTT; see {{using-0rtt}}.
 
 
-## Properties of Underlying Transport {#transport-properties}
-
-QMux is designed to work on top of transport layer protocols that provide the
-following capabilities:
-
-In-order delivery of bytes in both direction:
-
-: Underlying transport provides a byte-oriented and bi-directional stream that
-  deliver the bytes in order; i.e., bytes that were sent in one order become
-  available to the receiving side in the same order.
-
-Guaranteed delivery:
-
-: If the transport runs on top of a lossy network, that transport recovers the
-  bytes lost; e.g., by retransmitting them. This requires buffering and
-  reassembly, in order to achieve the first bullet point (in-order delivery).
-
-Congestion control:
-
-: When used on a shared network, the transport is congestion controlled.
-  Implementations of QMux simply write outgoing frames to the transport when
-  that transport permits.
-
-Authentication, confidentiality, and integrity protection:
-
-: Unless used upon endpoints between which tampering or monitoring is a
-  non-concern, the transport provides peer authentication, confidentially, and
-  integrity protection.
-
-Application Protocol Negotiation:
-
-: To avoid cross-protocol confusion, the underlying transport provides a
-  mechanism for endpoints to agree on the protocols in use. Without such a
-  mechanism, QMux and application protocols built on top of QMux can only be
-  used between endpoints that have out-of-band agreement on those protocols.
-
-TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
-(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities. Other underlying
-transports can be used if they provide equivalent capabilities; see
-{{other-transports}}.
-
-
-## QMux Records {#records}
+# QMux Records {#records}
 
 QMux Records are formatted as shown in {{fig-qmux-record}}.
 
@@ -423,7 +389,7 @@ of the same type, the endpoint MUST close the connection with an error of type
 PROTOCOL_VIOLATION.
 
 
-# Transport Parameters
+# Transport Parameters {#tps}
 
 As in QUIC, QMux exchanges transport parameters following the rules established
 in {{Section 7.4 of QUIC}}, with the modifications described in the subsections
@@ -533,7 +499,7 @@ amount of stream data a peer can send is limited by flow control
 datagrams when they cannot be promptly delivered to the application.
 
 
-# Connection Termination
+# Connection Termination {#termination}
 
 A QMux connection can be terminated by an idle timeout, by a CONNECTION_CLOSE
 frame, or by observing a closure of the underlying transport.
@@ -782,6 +748,48 @@ congestion control parameters of the underlying transport. This approach aims to
 minimize data buffering within the transport layer before transmission. However,
 improper adjustment of these parameters could potentially lead to lower
 throughput.
+
+
+# Properties of Underlying Transport {#transport-properties}
+
+QMux is designed to work on top of transport layer protocols that provide the
+following capabilities:
+
+In-order delivery of bytes in both direction:
+
+: Underlying transport provides a byte-oriented and bi-directional stream that
+  deliver the bytes in order; i.e., bytes that were sent in one order become
+  available to the receiving side in the same order.
+
+Guaranteed delivery:
+
+: If the transport runs on top of a lossy network, that transport recovers the
+  bytes lost; e.g., by retransmitting them. This requires buffering and
+  reassembly, in order to achieve the first bullet point (in-order delivery).
+
+Congestion control:
+
+: When used on a shared network, the transport is congestion controlled.
+  Implementations of QMux simply write outgoing frames to the transport when
+  that transport permits.
+
+Authentication, confidentiality, and integrity protection:
+
+: Unless used upon endpoints between which tampering or monitoring is a
+  non-concern, the transport provides peer authentication, confidentially, and
+  integrity protection.
+
+Application Protocol Negotiation:
+
+: To avoid cross-protocol confusion, the underlying transport provides a
+  mechanism for endpoints to agree on the protocols in use. Without such a
+  mechanism, QMux and application protocols built on top of QMux can only be
+  used between endpoints that have out-of-band agreement on those protocols.
+
+TLS over TCP, combined with the Application-Layer Protocol Negotiation extension
+(ALPN) {{!ALPN=RFC7301}}, provides all these capabilities. Other underlying
+transports can be used if they provide equivalent capabilities; see
+{{other-transports}}.
 
 
 # Security Considerations
