@@ -5,12 +5,12 @@
 QUIC                                                              K. Oku
 Internet-Draft                                                    Fastly
 Intended status: Standards Track                               L. Pardue
-Expires: 10 April 2027                                             Apple
+Expires: 18 May 2027                                          Cloudflare
                                                               J. Iyengar
                                                                  Netflix
                                                               E. Kinnear
                                                                    Apple
-                                                          7 October 2026
+                                                        14 November 2026
 
 
                                   QMux
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 April 2027.
+   This Internet-Draft will expire on 18 May 2027.
 
 Copyright Notice
 
@@ -700,10 +700,12 @@ Table of Contents
    side.  The use of graceful shutdown mitigates the risk of undelivered
    records and frames becoming lost due to abrupt termination of the
    underlying transport.  While waiting for the peer to gracefully shut
-   down, QMux endpoints SHOULD discard any data they receive without
-   processing it, similarly to QUIC version 1 endpoints discarding
-   packets received during the draining period (Section 10.2.2 of
-   [QUIC]).
+   down, QMux endpoints SHOULD discard any frames they receive without
+   processing them, except that they MAY process a CONNECTION_CLOSE
+   frame sent by the peer (see Section 7.3).  This is similar to QUIC
+   version 1 endpoints in the closing state, which are not required to
+   process received frames but can retain the ability to read a
+   CONNECTION_CLOSE frame (Section 10.2.1 of [QUIC]).
 
 7.3.  Responding to a Connection Close
 
@@ -1079,16 +1081,16 @@ Table of Contents
    [webtrans-h2]
               Frindell, A., Kinnear, E., Pauly, T., Thomson, M.,
               Vasiliev, V., and W. Xie, "WebTransport over HTTP/2", Work
-              in Progress, Internet-Draft, draft-ietf-webtrans-http2-15,
-              6 July 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-webtrans-http2-15>.
+              in Progress, Internet-Draft, draft-ietf-webtrans-http2-16,
+              2 November 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-webtrans-http2-16>.
 
    [webtrans-h3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-16, 6 July 2026,
+              ietf-webtrans-http3-17, 2 November 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-16>.
+              webtrans-http3-17>.
 
 Acknowledgments
 
@@ -1156,7 +1158,7 @@ Authors' Addresses
 
 
    Lucas Pardue
-   Apple
+   Cloudflare
    Email: lucas@lucaspardue.com
 
 
