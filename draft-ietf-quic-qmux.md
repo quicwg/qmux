@@ -586,12 +586,14 @@ for the peer to gracefully shut down the peer's sending side. The use of
 graceful shutdown mitigates the risk of undelivered records and frames
 becoming lost due to abrupt termination of the underlying transport. While
 waiting for the peer to gracefully shut down, QMux endpoints SHOULD discard any
-data they receive without processing it, similarly to QUIC version 1 endpoints
-discarding packets received during the draining period
-({{Section 10.2.2 of QUIC}}).
+frames they receive without processing them, except that they MAY process a
+CONNECTION_CLOSE frame sent by the peer (see {{respond-close}}). This is
+similar to QUIC version 1 endpoints in the closing state, which are not
+required to process received frames but can retain the ability to read a
+CONNECTION_CLOSE frame ({{Section 10.2.1 of QUIC}}).
 
 
-## Responding to a Connection Close
+## Responding to a Connection Close {#respond-close}
 
 When receiving a CONNECTION_CLOSE frame or observing the peer shut down the
 peer's sending side, the receiving endpoint SHOULD gracefully shut down its
